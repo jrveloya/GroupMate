@@ -1,0 +1,28 @@
+.nav-bar {
+  display: flex;
+  align-items: center;
+  background-color: gray;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.title {
+  color: blue;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: cyan;
+}
