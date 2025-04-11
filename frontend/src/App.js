@@ -2,13 +2,7 @@ import "./App.css";
 import Home from "./components/Home";
 import Page1 from "./components/Page1";
 import Navbar from "./components/Navbar";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-} from "react-router";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
 
 function App() {
   return (
