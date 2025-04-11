@@ -1,0 +1,37 @@
+.nav-bar {
+  display: flex;
+  align-items: center;
+  background-color: gray;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.title {
+  color: blue;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.title a {
+  text-decoration: none;
+}
+
+.title a:hover {
+  color: rgb(86, 94, 212);
+}
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: cyan;
+}
