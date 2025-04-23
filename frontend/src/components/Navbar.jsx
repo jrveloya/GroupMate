@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router";
+import { FiSettings } from "react-icons/fi";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -26,8 +27,15 @@ const Navbar = () => {
         <li>
           <Link to="/tasks">Task Board</Link>
         </li>
+        <li>
+          <Link to="/completed-tasks">Completed Tasks</Link>
+        </li>
       </ul>
       <div className="nav-actions">
+        <Link to="/settings" className="settings-link">
+          <FiSettings size={20} style={{ marginRight: "5px" }} />
+          Settings
+        </Link>
         <button onClick={handleLogout} className="logout-button">
           Logout
         </button>

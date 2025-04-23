@@ -17,14 +17,18 @@ const Dashboard = () => {
             <p>View and manage all your tasks.</p>
           </div>
         </Link>
-        <div className="card">
-          <h3>Completed</h3>
-          <p>See what you've accomplished.</p>
-        </div>
-        <div className="card">
-          <h3>Settings</h3>
-          <p>Manage your profile and preferences.</p>
-        </div>
+        <Link to="/completed-tasks" className="card-link">
+          <div className="card">
+            <h3>Completed</h3>
+            <p>See what you've accomplished.</p>
+          </div>
+        </Link>
+        <Link to="/settings" className="card-link">
+          <div className="card">
+            <h3>Settings</h3>
+            <p>Manage your profile and preferences.</p>
+          </div>
+        </Link>
       </div>
     </div>
   );
