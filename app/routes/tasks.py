@@ -1,35 +1,68 @@
+import datetime
+from bson import ObjectId
 from flask import Blueprint, request, jsonify
-from app.models import db, Tasks
+from flask_jwt_extended import jwt_required
+from app.models import complete_task, create_task, db, Tasks, get_all_tasks, get_db, update_task
 
 tasks_bp = Blueprint('tasks', __name__)
 
-STATUS = ['ACTIVE', 'COMPLETE', 'ARCHIVE']
-
 @tasks_bp.route('/', methods=['POST'])
-def create_task():
-    data = request.json()
-    new_task = Tasks(
-        title = data['title'],
-        description = data.get('description', ''),
-        status = data.get('status','todo'),
-        project_id = data['project_id'],
+@jwt_required()
+def create_task_route():
+    data = request.get_json()
+    task_id = create_task(
+        title=data['title'],
+        description=data.get('description', ''),
+        project_id=data['project_id'],
         assignee_id = data.get('assignee_id')
     )
-    db.session.add(new_task)
-    db.session.commit()
     return jsonify({
-        'message': 'Task created',
-        'task_id' : new_task.id
-    }), 201
+        'task_id' : task_id
+        }), 201
+
+@tasks_bp.route('/', methods=["GET"])
+@jwt_required()
+def get_all_tasks_route():
+    tasks = get_all_tasks()
+    return jsonify(tasks)
+
+@tasks_bp.route('/<task_id>', methods=["GET"])
+@jwt_required()
+def get_task_route(task_id):
+    task = get_task_route(task_id)
+    if not task:
+        return jsonify({'error' : 'Task not found.'}), 404
+    task['_id'] = str(task['_id'])
+    return jsonify(task)
     
 # make sure to have an enum that says either 'complete','active', or 'archive' as a form in the page
 @tasks_bp.route('/<int:task_id>/complete', methods=["POST"])
-def  complete_task(task_id):
-    data=request.json()
-    task = Tasks.query.get_or_404(task_id)
-    task.status = data.get('status')
-    # add more logic here later on -- if the whole project is completed, archive all tasks. OR after a certain time frame (maybe a week), archive all completed tasks
-    db.session.commit()
+@jwt_required()
+def complete_task_route(task_id):
+    complete_task(task_id)
     return jsonify({
-        'message' : f"Task {task_id} marked {task.status}"
+        'message' : f"Task {task_id} marked complete."
     })
+    
+@tasks_bp.route('/<task_id>', methods=['PUT'])
+@jwt_required()
+def update_task_route(task_id):
+    data = request.get_json()
+    updates = {
+        "title" : data.get('title'),
+        "description" : data.get('description'),
+        "status" : data.get('status'),
+        "updated_at" : datetime.now(datetime.UTC)
+    }
+    updates = {k : v for k,v in updates.items() if v is not None}
+    results = update_task(task_id, updates)
+    if results.matched_count == 0:
+        return jsonify({'error': 'Task not found'}), 404
+    return jsonify({"message" : "Task Updated."}), 200
+
+@tasks_bp.route('/<task_id>', methods=['DELETE'])
+@jwt_required()
+def delete_task(task_id):
+    db = get_db()
+    db.tasks.delete_one({"_id" : ObjectId(task_id)})
+    return jsonify({"message" : "Task deleted."})
