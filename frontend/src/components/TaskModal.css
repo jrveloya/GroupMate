@@ -1,0 +1,137 @@
+/* General modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 35px;
+  border-radius: 10px;
+  width: 700px; /* Increased width for a larger modal */
+  position: relative;
+  overflow: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Task header and description */
+h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333; /* Added color to task title */
+}
+
+p {
+  margin: 5px 0;
+}
+
+strong {
+  font-weight: bold;
+}
+
+/* Actions */
+.actions {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.complete-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.complete-btn:hover {
+  background-color: #45a049;
+}
+
+/* Comment section styles */
+.comment-section {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.comment-list-container {
+  max-height: 250px; /* Limit height of comments list */
+  overflow-y: auto; /* Allow scrolling in the comment list only */
+  margin-bottom: 20px;
+}
+
+h4 {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+  color: #333; /* Added color to the comment section title */
+}
+
+/* Comment list styles */
+.comment-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.comment-item {
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-left: 4px solid transparent; /* Make the border transparent by default */
+  border-radius: 5px;
+}
+
+.comment-item strong {
+  color: inherit; /* Inherit color from the inline style */
+}
+
+/* Styling for the comment input */
+.comment-inputs {
+  margin-top: 20px;
+}
+
+.comment-inputs input,
+.comment-inputs textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.comment-inputs textarea {
+  height: 100px;
+}
+
+.comment-inputs button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.comment-inputs button:hover {
+  background-color: #0056b3;
+}

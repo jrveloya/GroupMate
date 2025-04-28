@@ -25,3 +25,57 @@
   font-size: 0.9rem;
   color: #555;
 }
+
+.taskboard-container {
+  padding: 20px;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+}
+
+.task-card {
+  margin-bottom: 1rem; /* Spacing between cards */
+  padding: 1rem;
+  background-color: #fff;
+  border-left: 5px solid #6366f1; /* Bold left border */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Hover effect for card */
+.task-card:hover {
+  transform: translateY(-5px); /* Slight lift */
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  cursor: pointer;
+}
+
+.task-card h3 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  color: #333; /* Dark color for title */
+}
+
+.task-card p {
+  margin: 0.5rem 0;
+  color: #666; /* Lighter text for description */
+}
+
+.due-date {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.project-title {
+  font-size: 1.75rem; /* Larger font size for better visibility */
+  font-weight: bold;
+  color: #fff; /* White text for better contrast */
+  background-color: #6366f1; /* Purple background for the project header */
+  padding: 1rem; /* Add more padding to make it spacious */
+  border-radius: 8px; /* Rounded corners for a modern look */
+  margin-bottom: 1rem; /* Space below the header */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+}

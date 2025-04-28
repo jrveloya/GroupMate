@@ -1,23 +1,58 @@
 .completed-container {
-  padding: 40px;
-  max-width: 800px;
-  margin: auto;
+  padding: 20px;
 }
 
 .completed-list {
-  list-style: none;
+  list-style-type: none;
   padding: 0;
+  display: flex;
+  flex-direction: column; /* Stack tasks vertically */
+  align-items: center; /* Center tasks horizontally */
+  gap: 15px; /* Reduced space between tasks */
 }
 
 .completed-card {
-  background: #e0f7ea;
-  padding: 20px;
-  margin-bottom: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  padding: 15px; /* Reduced padding for smaller tasks */
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 60%; /* Reduced width to make tasks smaller */
+  border: 1px solid #f0f0f0;
+  outline-offset: 4px; /* Add space between the border and the outline */
+  transition: all 0.3s ease-in-out;
+  font-size: 0.9rem; /* Smaller font size */
+}
+
+.completed-card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-color: #ddd;
+  outline-color: #0056b3; /* Darker blue outline on hover */
 }
 
 .completed-date {
-  font-size: 0.85rem;
-  color: #4caf50;
+  font-size: 0.8rem; /* Smaller font size for the completed date */
+  color: #777;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.pagination button:hover {
+  background-color: #f1f1f1;
 }

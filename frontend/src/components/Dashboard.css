@@ -33,3 +33,45 @@
   text-decoration: none;
   color: inherit;
 }
+
+.announcements-section {
+  margin: 2rem 0;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.announcement-card {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-left: 5px solid #6366f1; /* Nice bold purple left border */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  transition: transform 0.2s;
+}
+
+.announcement-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.announcement-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  color: #374151; /* dark text */
+}
+
+.announcement-card p {
+  margin: 0.5rem 0;
+  color: #4b5563;
+}
+
+.announcement-card small {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  text-align: right;
+}
