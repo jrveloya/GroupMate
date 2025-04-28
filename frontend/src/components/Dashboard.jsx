@@ -17,15 +17,14 @@ const Dashboard = () => {
     const sampleData = [
       {
         id: 1,
-        title: "Welcome to the Task Manager!",
-        message: "We're excited to have you. Start by adding your first task!",
+        title: "Welcome to GroupMate!",
+        message: "Start by adding your first task!",
         created_at: "2025-04-25T10:00:00Z",
       },
       {
         id: 2,
         title: "New Feature 🚀",
-        message:
-          "You can now categorize tasks by priority. Check it out in settings!",
+        message: "You can now add comments to tasks!",
         created_at: "2025-04-26T15:30:00Z",
       },
     ];
