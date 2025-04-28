@@ -30,6 +30,9 @@ const Navbar = () => {
         <li>
           <Link to="/completed-tasks">Completed Tasks</Link>
         </li>
+        <li>
+          <Link to="/management-board">Management Board</Link>
+        </li>
       </ul>
       <div className="nav-actions">
         <Link to="/settings" className="settings-link">

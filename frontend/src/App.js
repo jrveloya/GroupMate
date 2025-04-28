@@ -7,6 +7,8 @@ import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import CompletedTasks from "./components/CompletedTasks";
 import Settings from "./components/Settings";
+import ManagementBoard from "./components/ManagementBoard";
+import ProjectDetailPage from "./components/ProjectDetailPage";
 import {
   BrowserRouter as Router,
   Routes,
@@ -41,6 +43,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/management-board" element={<ManagementBoard />} />
+          <Route path="/project/:projectId" element={<ProjectDetailPage />} />
         </Routes>
       </Layout>
     </Router>

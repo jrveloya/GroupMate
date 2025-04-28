@@ -1,0 +1,105 @@
+.project-detail-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.project-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.project-header h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.project-header p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.project-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.projects {
+  width: 48%;
+}
+
+.tasks-section,
+.announcements-section {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.new-task-btn,
+.new-announcement-btn {
+  background-color: #6366f1;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.new-task-btn:hover,
+.new-announcement-btn:hover {
+  background-color: #4f46e5;
+}
+
+.task-list,
+.announcement-list {
+  list-style: none;
+  padding: 0;
+}
+
+.task-card,
+.announcement-card {
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.task-card h4,
+.announcement-card p {
+  margin: 0;
+}
+
+.task-card p {
+  color: #666;
+}
+
+.projects .new-task-btn,
+.projects .new-announcement-btn {
+  align-self: flex-start;
+}
+
+.task-description,
+.announcement-description {
+  resize: none;
+  height: 120px;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.announcement-description {
+  margin-top: 20px;
+}
+.task-form {
+  padding: 10px;
+}
+
+.modal-content button {
+  margin-top: 50px;
+}
