@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import current_app
 import uuid
 
@@ -8,7 +8,18 @@ def get_db():
     client = MongoClient('mongodb://localhost:27017/')
     return client['groupmate']
 
-
+# helper function to converd ObjectId to str ( in order to return as JSON)
+def convert_objectid_to_str(doc):
+    if isinstance(doc, dict):
+        return {k: convert_objectid_to_str(v) for k, v in doc.items()}
+    elif isinstance(doc, list):
+        return [convert_objectid_to_str(i) for i in doc]
+    elif isinstance(doc, ObjectId):
+        return str(doc)
+    elif isinstance(doc, datetime):
+        return doc.isoformat()
+    else:
+        return doc
 # ---------- USER CRUD METHODS ----------
 """
 Creates a user and returns the inserted ID.
@@ -61,14 +72,17 @@ This project only to be used by managers role users.
 def create_project(name, description, manager_id):
     db = get_db()
     project = {
-        'name' : name,
-        'description' : description,
-        'status' : 'active',
-        'manager_id' : ObjectId(manager_id),
-        'created_at' : datetime.now(datetime.UTC),
-        'updated_at' : datetime.now(datetime.UTC)
+        'name': name,
+        'description': description,
+        'status': 'active',
+        'announcements': [],
+        'manager_id': ObjectId(manager_id),
+        'member_ids': [ObjectId(manager_id)],
+        'created_at': datetime.now(timezone.utc),
+        'updated_at': datetime.now(timezone.utc)
     }
-    return str(db.project.insert_one(project).inserted_id)
+    result = db.projects.insert_one(project)
+    return str(result.inserted_id)
 """
 Retrieves the project
 @param
@@ -76,7 +90,7 @@ Retrieves the project
 """
 def get_project(project_id):
     db = get_db()
-    return db.project.find_one({
+    return db.projects.find_one({
         "_id" : ObjectId(project_id)
     })
 
@@ -92,19 +106,20 @@ This creates a task
     asignee_id : the ID of the asignee the task is tied to
 """
 
-def create_task(title, description, project_id, asignee_id=None):
+def create_task(title, description, project_id, assignee_id=None):
     db = get_db()
     task = {
         'title' : title,
         'description' : description,
         'status' : 'active',
         'project_id' : ObjectId(project_id),
-        'asignee_id' : ObjectId(asignee_id),
+        'assignee_id' : ObjectId(assignee_id) if assignee_id else None,
         'comments' : [],
-        'created_at' : datetime.now(datetime.UTC),
-        'updated_at' : datetime.now(datetime.UTC)
+        'created_at' : datetime.now(timezone.utc),
+        'updated_at' : datetime.now(timezone.utc)
     }
-    return str(db.tasks.insert_one(task).inserted_id)
+    result = db.tasks.insert_one(task)
+    return str(result.inserted_id)
 
 """
 Sets the status of a task to 'compelete'
@@ -115,7 +130,7 @@ def complete_task(task_id):
     db = get_db()
     db.tasks.update_one({'_id' : ObjectId(task_id)}, {"$set" : {
         "status" : "complete",
-        "updated_at" : datetime.now(datetime.UTC)}})
+        "updated_at" : datetime.now(timezone.utc)}})
 
 """
 This returns a list of all the tasks assigned to the project.
@@ -123,10 +138,7 @@ This returns a list of all the tasks assigned to the project.
 def get_all_tasks():
     db = get_db()
     tasks = list(db.tasks.find())
-    for task in tasks:
-        task['_id'] = str(task['_id'])
-        if task.get('project_id'):
-            task['project_id'] = str(task['project_id'])
+    tasks = convert_objectid_to_str(tasks)
     return tasks
 
 """
@@ -162,10 +174,23 @@ def create_task_comment(content, user_id, task_id):
     task_comment = {
         "user_id" : ObjectId(user_id),
         "content" : content,
-        "task_id" : ObjectId(task_id)
+        "task_id" : ObjectId(task_id),
+        "created_at" : datetime.now(timezone.utc),
+        "last_updated" : datetime.now(timezone.utc)
     }
     db.tasks.update_one({"_id":ObjectId(task_id)},
                         {"$push" : {"comments" : task_comment}})
+
+def update_comment(comment_id, new_content):
+    db = get_db()
+    
+    result = db.task.update_one(
+        {"comment_id" : ObjectId(comment_id)},
+        {"$set" : {
+            "comment.$.content" : new_content,
+            "comment.$.last_updated" : datetime.now(timezone.utc)
+        }}
+        )
 
 # ---------- ANNOUNCEMENT ----------
 """
@@ -175,11 +200,14 @@ This creates an announcement
     user_id : the id of the user that made the announcement
     content : the content to be announced to the project members
 """
-def create_announcement(project_id, user_id, content):
+def create_announcement(project_id, user_id, title, content):
     db = get_db()
     announcement = {
         'project_id' : ObjectId(project_id),
-        'user_id' : ObjectId(user_id),
-        'content' : content
+        'created_by' : ObjectId(user_id),
+        'title' : title,
+        'content' : content,
+        'created_at' : datetime.now(timezone.utc)
     }
-    return str(db.announcements.insert_one(announcement).inserted_id)
+    result = db.announcements.insert_one(announcement)
+    return str(result.inserted_id)

@@ -6,7 +6,7 @@ jwt = JWTManager()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('config.DevelopmentConfig')
+    app.config.from_object('app.config.DevelopmentConfig')
     jwt.init_app(app)
     
     register_routes(app)
