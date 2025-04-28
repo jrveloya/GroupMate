@@ -6,9 +6,9 @@
   list-style-type: none;
   padding: 0;
   display: flex;
-  flex-direction: column; /* Stack tasks vertically */
-  align-items: center; /* Center tasks horizontally */
-  gap: 15px; /* Reduced space between tasks */
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 
 .completed-card {
@@ -18,15 +18,15 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   width: 60%; /* Reduced width to make tasks smaller */
   border: 1px solid #f0f0f0;
-  outline-offset: 4px; /* Add space between the border and the outline */
+  outline-offset: 4px;
   transition: all 0.3s ease-in-out;
-  font-size: 0.9rem; /* Smaller font size */
+  font-size: 0.9rem;
 }
 
 .completed-card:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-color: #ddd;
-  outline-color: #0056b3; /* Darker blue outline on hover */
+  outline-color: #0056b3;
 }
 
 .completed-date {

@@ -77,7 +77,6 @@ const CompletedTasks = () => {
         // },
       ];
 
-      // Simulate fetching data from an API
       setTimeout(() => {
         setCompletedTasks(sampleCompletedTasks);
         setLoading(false);
@@ -121,7 +120,6 @@ const CompletedTasks = () => {
             ))}
           </ul>
 
-          {/* Pagination Controls */}
           <div className="pagination">
             {Array.from(
               { length: Math.ceil(completedTasks.length / tasksPerPage) },

@@ -19,33 +19,30 @@ const TaskModal = ({ task, onClose, onComplete, onComment }) => {
     }
   };
 
-  // Formula to generate RGB color from name
+  // Create a random RGB color based on the person's name
   const generateColorFromName = (name) => {
-    // Sum up the character codes of each character in the name
     let sum = 0;
     for (let i = 0; i < name.length; i++) {
       sum += name.charCodeAt(i);
     }
 
     // Use parts of the sum to generate RGB values
-    const red = (sum * 3) % 256; // Red value: based on the sum (scaled)
-    const green = (sum * 5) % 256; // Green value: based on the sum (scaled)
-    const blue = (sum * 7) % 256; // Blue value: based on the sum (scaled)
+    const red = (sum * 3) % 256;
+    const green = (sum * 5) % 256;
+    const blue = (sum * 7) % 256;
 
     // Return the color as a hex code
     return `rgb(${red}, ${green}, ${blue})`;
   };
 
-  // Handle comment input change
   const handleCommentChange = (e) => {
     setComment(e.target.value);
   };
 
-  // Handle comment submission
   const handleCommentSubmit = () => {
     if (comment.trim()) {
       onComment(comment); // Pass the comment and commenter name to the parent component
-      setComment(""); // Clear the comment input after submitting
+      setComment("");
     }
   };
 
@@ -78,7 +75,7 @@ const TaskModal = ({ task, onClose, onComplete, onComment }) => {
                       key={index}
                       className="comment-item"
                       style={{
-                        borderLeftColor: commenterColor, // Set dynamic color for the left border
+                        borderLeftColor: commenterColor,
                       }}
                     >
                       <strong style={{ color: commenterColor }}>

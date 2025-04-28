@@ -1,4 +1,3 @@
-/* General modal styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -15,12 +14,11 @@
   background-color: white;
   padding: 35px;
   border-radius: 10px;
-  width: 700px; /* Increased width for a larger modal */
+  width: 700px;
   position: relative;
   overflow: hidden; /* Prevent horizontal scrolling */
 }
 
-/* Close button */
 .close-btn {
   position: absolute;
   top: 10px;
@@ -31,11 +29,10 @@
   cursor: pointer;
 }
 
-/* Task header and description */
 h3 {
   margin: 0;
   font-size: 1.5rem;
-  color: #333; /* Added color to task title */
+  color: #333;
 }
 
 p {
@@ -46,7 +43,6 @@ strong {
   font-weight: bold;
 }
 
-/* Actions */
 .actions {
   margin-top: 20px;
   text-align: center;
@@ -66,7 +62,6 @@ strong {
   background-color: #45a049;
 }
 
-/* Comment section styles */
 .comment-section {
   margin-top: 20px;
   padding-top: 10px;
@@ -82,10 +77,9 @@ strong {
 h4 {
   font-size: 1.25rem;
   margin-bottom: 10px;
-  color: #333; /* Added color to the comment section title */
+  color: #333;
 }
 
-/* Comment list styles */
 .comment-list {
   list-style-type: none;
   padding: 0;
@@ -95,15 +89,14 @@ h4 {
   background-color: #f9f9f9;
   margin-bottom: 10px;
   padding: 10px;
-  border-left: 4px solid transparent; /* Make the border transparent by default */
+  border-left: 4px solid transparent;
   border-radius: 5px;
 }
 
 .comment-item strong {
-  color: inherit; /* Inherit color from the inline style */
+  color: inherit;
 }
 
-/* Styling for the comment input */
 .comment-inputs {
   margin-top: 20px;
 }

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import TaskModal from "./TaskModal"; // Import the modal component
+import TaskModal from "./TaskModal";
 import "./Taskboard.css";
 
 const Taskboard = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedTask, setSelectedTask] = useState(null); // Track selected task
-  const [showModal, setShowModal] = useState(false); // Modal visibility state
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const fetchTasks = async () => {
     try {
@@ -65,30 +65,22 @@ const Taskboard = () => {
     }
   };
 
-  // Helper function to format the date
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
-
   const handleTaskClick = (task) => {
     setSelectedTask(task);
-    setShowModal(true); // Open the modal
+    setShowModal(true);
   };
 
   const handleModalClose = () => {
-    setShowModal(false); // Close the modal
+    setShowModal(false);
   };
 
   //Make a post to backend to register task as completed
   const handleCompleteTask = (taskId) => {
     console.log(`Task ${taskId} completed`);
-    setShowModal(false); // Close the modal after completion
+    setShowModal(false);
   };
 
   const handleCommentSubmit = (newComment, commenterName) => {
-    // Update the task with the new comment
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
         task.id === selectedTask.id
