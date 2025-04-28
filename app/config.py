@@ -15,7 +15,7 @@ class Config:
 
     # JWT settings
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "another-super-secret")
-    JWT_ACCESS_TOKEN_EXPIRES = 3600  # Token expires after 1 hour (seconds)
+    JWT_ACCESS_TOKEN_EXPIRES = 3600  # Token expires after 1 hour 3600 seconds 
 
 class DevelopmentConfig(Config):
     DEBUG = True
