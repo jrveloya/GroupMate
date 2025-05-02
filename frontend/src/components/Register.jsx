@@ -20,7 +20,7 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, password, confirmPassword } = formData;
 
@@ -30,10 +30,28 @@ const Register = () => {
     }
 
     // Handle form submission (e.g., send to backend)
+    try {
+      const response = await fetch("http://127.0.0.1:5050/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    console.log("Form submitted:", formData);
-    navigate("/dashboard");
-    setError("");
+      if (response.ok) {
+        const data = await response.json();
+        console.log("User created:", data);
+        setError("");
+        navigate("/dashboard");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || "Failed to register");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      setError("An error occurred. Please try again.");
+    }
   };
 
   const goBack = () => {

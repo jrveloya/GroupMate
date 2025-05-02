@@ -8,57 +8,41 @@ const Taskboard = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  // Currently just uses the endpoint that returns all tasks, change to get tasks assigned to this person
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      //Change this to use backend data
-      const sampleTasks = [
-        {
-          id: 1,
-          title: "Finish Dashboard Design",
-          description: "Create the UI for the dashboard.",
-          due_date: "2025-04-30",
-          project: { id: 1, name: "Dashboard" },
-          comments: [
-            {
-              commenterName: "John Doe",
-              text: "Can you modify some more components on the dashboard. Right now it looks too plain.",
-            },
-            { commenterName: "Jane Doe", text: "!Looks good" },
-            { commenterName: "LeBron James", text: "!Looks good" },
-          ],
+
+      const token = localStorage.getItem("access_token");
+      console.log(token);
+      const response = await fetch("http://127.0.0.1:5050/tasks/", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
-        {
-          id: 2,
-          title: "API Integration",
-          description: "Connect the frontend with backend.",
-          due_date: "2025-05-02",
-          project: { id: 1, name: "Dashboard" },
-          comments: [{ commenterName: "John Doe", text: "Looks good!" }],
-        },
-        {
-          id: 3,
-          title: "Backend Setup",
-          description: "Set up the backend structure.",
-          due_date: "2025-05-10",
-          project: { id: 2, name: "Backend" },
-          comments: [
-            { commenterName: "Jane Smith", text: "Initial setup done!" },
-          ],
-        },
-        {
-          id: 4,
-          title: "Authentication",
-          description: "Implement authentication system.",
-          due_date: "2025-05-15",
-          project: { id: 2, name: "Backend" },
-          comments: [],
-        },
-      ];
-      setTimeout(() => {
-        setTasks(sampleTasks);
-        setLoading(false);
-      }, 500);
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
+
+      const data = await response.json();
+
+      // Transform backend task format to match your frontend format
+      const transformedTasks = data.map((task) => ({
+        id: task._id,
+        title: task.title,
+        description: task.description,
+        due_date: task.updated_at, // or created_at — adjust as needed
+        project: { id: task.project_id, name: `Project ${task.project_id}` }, // Replace with real project name if you have it
+        comments: task.comments.map((c) => ({
+          commenterName: c.commenterName || "Unknown", // fallback if backend doesn't include name
+          text: c.text || "",
+        })),
+      }));
+
+      setTasks(transformedTasks);
+      setLoading(false);
     } catch (err) {
       console.error("Error fetching tasks:", err);
       setLoading(false);

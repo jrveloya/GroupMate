@@ -26,7 +26,7 @@ def create_task_route():
 @jwt_required()
 def get_all_tasks_route():
     tasks = get_all_tasks()
-    return jsonify(tasks)
+    return jsonify(tasks), 200
 
 @tasks_bp.route('/<task_id>', methods=["GET"])
 @jwt_required()
