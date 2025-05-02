@@ -145,7 +145,7 @@ def get_all_tasks():
 """
 This returns a list of all the tasks assigned to the user.
 """
-def get_all_tasks_by_user(user_id):
+def get_all_active_tasks_by_user(user_id):
     db = get_db()
     tasks = list(db.tasks.find({
         "assigned_to": ObjectId(user_id),
@@ -153,6 +153,19 @@ def get_all_tasks_by_user(user_id):
     }))
     tasks = convert_objectid_to_str(tasks)
     return tasks
+
+"""
+This returns a list of all the tasks assigned to the user.
+"""
+def get_all_completed_tasks_by_user(user_id):
+    db = get_db()
+    tasks = list(db.tasks.find({
+        "assigned_to": ObjectId(user_id),
+        "status": "complete"
+    }))
+    tasks = convert_objectid_to_str(tasks)
+    return tasks
+
 
 """
 This grabs a singular task through the task ID 

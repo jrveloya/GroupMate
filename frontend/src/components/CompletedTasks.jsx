@@ -10,79 +10,37 @@ const CompletedTasks = () => {
   const fetchCompletedTasks = async () => {
     try {
       setLoading(true);
-      //Change this to use backend data
-      const sampleCompletedTasks = [
-        {
-          id: 1,
-          title: "Finish Dashboard Design",
-          description: "Finalized the dashboard design and layout.",
-          completed_date: "2025-04-15",
-        },
-        {
-          id: 2,
-          title: "API Integration",
-          description:
-            "Completed the integration of the frontend and backend APIs.",
-          completed_date: "2025-04-20",
-        },
-        {
-          id: 3,
-          title: "User Authentication",
-          description: "Set up the authentication system for the application.",
-          completed_date: "2025-04-22",
-        },
-        {
-          id: 4,
-          title: "Backend Setup",
-          description:
-            "Configured the initial backend environment and database.",
-          completed_date: "2025-04-10",
-        },
-        {
-          id: 5,
-          title: "Fix UI Bugs",
-          description: "Fixed some UI bugs and improved responsiveness.",
-          completed_date: "2025-04-12",
-        },
-        {
-          id: 6,
-          title: "Database Optimization",
-          description: "Optimized database queries for better performance.",
-          completed_date: "2025-04-18",
-        },
-        {
-          id: 7,
-          title: "Mobile App Deployment",
-          description: "Deployed the mobile app to production.",
-          completed_date: "2025-04-25",
-        },
-        {
-          id: 8,
-          title: "SEO Optimization",
-          description: "Improved SEO on the website for better ranking.",
-          completed_date: "2025-04-23",
-        },
-        // {
-        //   id: 9,
-        //   title: "Bug Fixing",
-        //   description: "Fixed minor bugs in the application.",
-        //   completed_date: "2025-04-28",
-        // },
-        // {
-        //   id: 10,
-        //   title: "Code Refactoring",
-        //   description:
-        //     "Refactored the backend code for better maintainability.",
-        //   completed_date: "2025-04-30",
-        // },
-      ];
 
-      setTimeout(() => {
-        setCompletedTasks(sampleCompletedTasks);
-        setLoading(false);
-      }, 500);
+      const token = localStorage.getItem("access_token");
+      console.log(token);
+
+      // Updated URL to match the backend endpoint
+      const response = await fetch("http://127.0.0.1:5050/tasks/me/completed", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
+
+      const data = await response.json();
+
+      // Transform backend task format to match the frontend format
+      const transformedTasks = data.map((task) => ({
+        id: task._id,
+        title: task.title,
+        description: task.description,
+        due_date: task.updated_at,
+        project: { id: task.project_id, name: `${task.project}` },
+      }));
+
+      setCompletedTasks(transformedTasks);
+      setLoading(false);
     } catch (err) {
-      console.error("Error fetching completed tasks:", err);
+      console.error("Error fetching tasks:", err);
       setLoading(false);
     }
   };
@@ -114,7 +72,7 @@ const CompletedTasks = () => {
                 <h3>{task.title}</h3>
                 <p>{task.description}</p>
                 <p className="completed-date">
-                  Completed on: {task.completed_date || "N/A"}
+                  Project: {task.project.name || "N/A"}
                 </p>
               </li>
             ))}

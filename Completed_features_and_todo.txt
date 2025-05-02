@@ -1,8 +1,8 @@
 Completed
 Task Board Basically done (functionally)
 Login and Register basically done (functionally)
+Completed tasks page
 
 To do
-Completed tasks page
 Management view
 Settings page

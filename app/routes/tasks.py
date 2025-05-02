@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from bson import ObjectId
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from app.models import complete_task, convert_objectid_to_str, create_task, get_all_tasks, get_db, get_task, update_task, get_all_tasks_by_user
+from app.models import complete_task, convert_objectid_to_str, create_task, get_all_tasks, get_db, get_task, update_task, get_all_active_tasks_by_user, get_all_completed_tasks_by_user, get_project
 
 tasks_bp = Blueprint('tasks', __name__)
 
@@ -73,9 +73,26 @@ def delete_task(task_id):
     return jsonify({"message" : "Task deleted."})
 
 # create get_tasks through assignee_id 
+
+#Gets all tasks assigned to the user
 @tasks_bp.route('/me', methods=["GET"])
 @jwt_required()
-def get_all_tasks_by_user_route():
+def get_all_active_tasks_by_user_route():
     user_id = get_jwt_identity()
-    tasks = get_all_tasks_by_user(user_id)
+    tasks = get_all_active_tasks_by_user(user_id)
+    #Add the project name to the response
+    for task in tasks:
+        task['project'] = get_project(str(task['project_id']))['name']
+    return jsonify(tasks), 200
+
+#Get all completed tasks by the user
+# create get_tasks through assignee_id 
+@tasks_bp.route('/me/completed', methods=["GET"])
+@jwt_required()
+def get_all__completed_tasks_by_user_route():
+    user_id = get_jwt_identity()
+    tasks = get_all_completed_tasks_by_user(user_id)
+    #Add the project name to the response
+    for task in tasks:
+        task['project'] = get_project(str(task['project_id']))['name']
     return jsonify(tasks), 200

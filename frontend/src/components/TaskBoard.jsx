@@ -36,7 +36,7 @@ const Taskboard = () => {
         title: task.title,
         description: task.description,
         due_date: task.updated_at,
-        project: { id: task.project_id, name: `Project ${task.project_id}` },
+        project: { id: task.project_id, name: task.project },
         comments: task.comments.map((c) => ({
           commenterName: c.username || "Unknown", // fallback if backend doesn't include name
           text: c.content || "",
