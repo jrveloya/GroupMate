@@ -147,7 +147,10 @@ This returns a list of all the tasks assigned to the user.
 """
 def get_all_tasks_by_user(user_id):
     db = get_db()
-    tasks = list(db.tasks.find({"assigned_to": ObjectId(user_id)}))
+    tasks = list(db.tasks.find({
+        "assigned_to": ObjectId(user_id),
+        "status": "active"
+    }))
     tasks = convert_objectid_to_str(tasks)
     return tasks
 

@@ -30,7 +30,6 @@ const Taskboard = () => {
 
       const data = await response.json();
 
-      console.log(data);
       // Transform backend task format to match the frontend format
       const transformedTasks = data.map((task) => ({
         id: task._id,
@@ -97,6 +96,9 @@ const Taskboard = () => {
     } catch (err) {
       console.error("Error in completing task:", err);
     }
+
+    // Re fetch after the modification
+    fetchTasks();
   };
 
   const handleCommentSubmit = async (newComment, commenterName) => {
