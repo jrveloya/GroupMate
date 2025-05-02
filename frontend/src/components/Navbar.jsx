@@ -1,14 +1,24 @@
-import React from "react";
-import { Link, useNavigate } from "react-router";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router"; // Fixed the import
 import { FiSettings } from "react-icons/fi";
+import Cookies from "js-cookie";
 import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [isManager, setIsManager] = useState(false);
+
+  useEffect(() => {
+    // Check if the user is a manager when component mounts
+    const userRole = Cookies.get("role");
+    setIsManager(userRole === "manager");
+  }, []);
 
   const handleLogout = () => {
     // Clear auth stuff (e.g., token)
-    // localStorage.removeItem('token');
+    localStorage.removeItem("access_token");
+    Cookies.remove("role");
+    Cookies.remove("user_id");
     navigate("/");
   };
 
@@ -30,9 +40,11 @@ const Navbar = () => {
         <li>
           <Link to="/completed-tasks">Completed Tasks</Link>
         </li>
-        <li>
-          <Link to="/management-board">Management Board</Link>
-        </li>
+        {isManager && (
+          <li>
+            <Link to="/management-board">Management Board</Link>
+          </li>
+        )}
       </ul>
       <div className="nav-actions">
         <Link to="/settings" className="settings-link">

@@ -52,6 +52,9 @@ const Login = () => {
         if (data.user_id) {
           Cookies.set("user_id", data.user_id, { expires: 7 }); // 7 days
         }
+        if (data.role) {
+          Cookies.set("role", data.role, { expires: 7 });
+        }
 
         setError("");
         navigate("/dashboard");
