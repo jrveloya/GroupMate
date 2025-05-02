@@ -15,7 +15,9 @@ const Taskboard = () => {
 
       const token = localStorage.getItem("access_token");
       console.log(token);
-      const response = await fetch("http://127.0.0.1:5050/tasks/", {
+
+      // Updated URL to match the backend endpoint
+      const response = await fetch("http://127.0.0.1:5050/tasks/me", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
@@ -28,16 +30,17 @@ const Taskboard = () => {
 
       const data = await response.json();
 
-      // Transform backend task format to match your frontend format
+      console.log(data);
+      // Transform backend task format to match the frontend format
       const transformedTasks = data.map((task) => ({
         id: task._id,
         title: task.title,
         description: task.description,
-        due_date: task.updated_at, // or created_at — adjust as needed
-        project: { id: task.project_id, name: `Project ${task.project_id}` }, // Replace with real project name if you have it
+        due_date: task.updated_at,
+        project: { id: task.project_id, name: `Project ${task.project_id}` },
         comments: task.comments.map((c) => ({
-          commenterName: c.commenterName || "Unknown", // fallback if backend doesn't include name
-          text: c.text || "",
+          commenterName: c.username || "Unknown", // fallback if backend doesn't include name
+          text: c.content || "",
         })),
       }));
 
@@ -59,22 +62,90 @@ const Taskboard = () => {
   };
 
   //Make a post to backend to register task as completed
-  const handleCompleteTask = (taskId) => {
-    console.log(`Task ${taskId} completed`);
-    setShowModal(false);
+  const handleCompleteTask = async (taskId) => {
+    try {
+      console.log(`Task ${taskId} completing...`);
+
+      // Get the access token from localStorage
+      const token = localStorage.getItem("access_token");
+
+      // Make a POST request to complete the task
+      const response = await fetch(
+        `http://127.0.0.1:5050/tasks/${taskId}/complete`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          },
+        }
+      );
+
+      // Check if the response is successful
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message); // Log success message from backend
+        setShowModal(false); // Close the modal
+        // Optionally, update the task list or refresh data here
+      } else {
+        const errorData = await response.json();
+        console.error(
+          "Error completing task:",
+          errorData.error || errorData.message
+        );
+      }
+    } catch (err) {
+      console.error("Error in completing task:", err);
+    }
   };
 
-  const handleCommentSubmit = (newComment, commenterName) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === selectedTask.id
-          ? {
-              ...task,
-              comments: [...task.comments, { commenterName, text: newComment }],
-            }
-          : task
-      )
-    );
+  const handleCommentSubmit = async (newComment, commenterName) => {
+    try {
+      // Ensure commenterName is not undefined
+      const safeCommenterName = commenterName || "Anonymous";
+
+      const response = await fetch("http://127.0.0.1:5050/comments/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+        body: JSON.stringify({
+          task_id: selectedTask.id,
+          content: newComment,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to post comment");
+      }
+
+      // Create the new comment object with a safe name
+      const newCommentObj = {
+        commenterName: safeCommenterName,
+        text: newComment,
+      };
+
+      // Update the selectedTask state with the new comment
+      setSelectedTask({
+        ...selectedTask,
+        comments: [...selectedTask.comments, newCommentObj],
+      });
+
+      // Update the tasks array
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === selectedTask.id
+            ? {
+                ...task,
+                comments: [...task.comments, newCommentObj],
+              }
+            : task
+        )
+      );
+    } catch (err) {
+      console.error("Error posting comment:", err);
+    }
   };
 
   useEffect(() => {
@@ -121,7 +192,7 @@ const Taskboard = () => {
         <TaskModal
           task={selectedTask}
           onClose={handleModalClose}
-          onComplete={handleCompleteTask}
+          onComplete={() => handleCompleteTask(selectedTask.id)}
           onComment={handleCommentSubmit}
         />
       )}

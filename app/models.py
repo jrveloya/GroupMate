@@ -106,7 +106,7 @@ This creates a task
     asignee_id : the ID of the asignee the task is tied to
 """
 
-def create_task(title, description, project_id, assignee_id=None):
+def create_task(title, description, project_id, assignee_id=None, assigned_to_id=None):
     db = get_db()
     task = {
         'title' : title,
@@ -114,6 +114,7 @@ def create_task(title, description, project_id, assignee_id=None):
         'status' : 'active',
         'project_id' : ObjectId(project_id),
         'assignee_id' : ObjectId(assignee_id) if assignee_id else None,
+        'assigned_to' : ObjectId(assigned_to_id) if assigned_to_id else None,
         'comments' : [],
         'created_at' : datetime.now(timezone.utc),
         'updated_at' : datetime.now(timezone.utc)
@@ -138,6 +139,15 @@ This returns a list of all the tasks assigned to the project.
 def get_all_tasks():
     db = get_db()
     tasks = list(db.tasks.find())
+    tasks = convert_objectid_to_str(tasks)
+    return tasks
+
+"""
+This returns a list of all the tasks assigned to the user.
+"""
+def get_all_tasks_by_user(user_id):
+    db = get_db()
+    tasks = list(db.tasks.find({"assigned_to": ObjectId(user_id)}))
     tasks = convert_objectid_to_str(tasks)
     return tasks
 
@@ -169,10 +179,11 @@ def get_task_list_through_asignee_id(asignee_id):
 
 # ----------COMMENT ----------
 
-def create_task_comment(content, user_id, task_id):
+def create_task_comment(content, user_id, task_id, username):
     db = get_db()
     task_comment = {
         "user_id" : ObjectId(user_id),
+        "username" : username,
         "content" : content,
         "task_id" : ObjectId(task_id),
         "created_at" : datetime.now(timezone.utc),

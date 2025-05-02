@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from bson import ObjectId
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from app.models import complete_task, convert_objectid_to_str, create_task, get_all_tasks, get_db, get_task, update_task
+from app.models import complete_task, convert_objectid_to_str, create_task, get_all_tasks, get_db, get_task, update_task, get_all_tasks_by_user
 
 tasks_bp = Blueprint('tasks', __name__)
 
@@ -16,7 +16,8 @@ def create_task_route():
         title=data['title'],
         description=data.get('description', ''),
         project_id=data['project_id'],
-        assignee_id = user_id
+        assignee_id = user_id,
+        assigned_to_id = data['assigned_to_id']
     )
     return jsonify({
         'task_id' : task_id
@@ -46,7 +47,7 @@ def complete_task_route(task_id):
     complete_task(task_id)
     return jsonify({
         'message' : f"Task {task_id} marked complete."
-    })
+    }), 200
     
 @tasks_bp.route('/<task_id>', methods=['PUT'])
 @jwt_required()
@@ -72,3 +73,9 @@ def delete_task(task_id):
     return jsonify({"message" : "Task deleted."})
 
 # create get_tasks through assignee_id 
+@tasks_bp.route('/me', methods=["GET"])
+@jwt_required()
+def get_all_tasks_by_user_route():
+    user_id = get_jwt_identity()
+    tasks = get_all_tasks_by_user(user_id)
+    return jsonify(tasks), 200
