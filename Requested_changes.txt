@@ -1,6 +1,5 @@
 Features needed from backend
 - Get all tasks by user id
-- When returning the tasks, need the project name in the return payload
 - Add 200 codes for each endpoint to verify it worked correctly
 - Possibly add teams
     - Makes it so that managers can only assign tasks to teams 
