@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
+import Cookies from "js-cookie";
 import "./ManagementBoard.css";
 
 // Modal component for adding new projects
@@ -57,54 +58,100 @@ const ManagementBoard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [noProjects, setNoProjects] = useState(false); // New state for tracking "no projects" condition
 
-  // Sample data for existing projects
-  const sampleProjects = [
-    {
-      id: 1,
-      name: "Project Alpha",
-      description: "A comprehensive project to redesign the company website.",
-    },
-    {
-      id: 2,
-      name: "Project Beta",
-      description: "A project to develop the mobile app for our services.",
-    },
-    {
-      id: 3,
-      name: "Project Gamma",
-      description: "A project to improve internal company software.",
-    },
-    {
-      id: 4,
-      name: "Project Delta",
-      description: "A project focused on marketing and branding strategy.",
-    },
-  ];
-
-  // Simulate fetching projects (replace this with real API call)
   useEffect(() => {
-    const fetchProjects = () => {
+    const fetchProjectsByManager = async () => {
       setLoading(true);
       setError(null);
+      setNoProjects(false); // Reset the no projects state
+
+      const managerId = Cookies.get("user_id");
+
+      // Guard clause if no manager ID
+      if (!managerId) {
+        setError("No manager ID found. Please log in again.");
+        setLoading(false);
+        return;
+      }
+
       try {
-        // Simulate a delay
-        setTimeout(() => {
-          setProjects(sampleProjects); // Using the sample data here
+        // Use the correct endpoint path based on your Flask route
+        const response = await fetch(
+          `http://127.0.0.1:5050/project/manager/${managerId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.status === 404) {
+          // Handle 404 as an expected condition, not an error
+          setProjects([]);
+          setNoProjects(true); // Set the flag to indicate no projects found
           setLoading(false);
-        }, 1000);
+          return; // Exit early
+        }
+
+        if (!response.ok) {
+          // Handle other non-success responses as actual errors
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const projectData = await response.json();
+        setProjects(projectData);
+        // If we got an empty array but not a 404, still show the no projects message
+        setNoProjects(projectData.length === 0);
       } catch (err) {
-        setError("Failed to fetch projects");
+        console.error("Error fetching projects:", err);
+        setError(err.message || "Failed to fetch projects");
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchProjects();
-  }, []);
+    fetchProjectsByManager();
+  }, []); // Empty dependency array means this effect runs once on mount
 
-  // Add a new project make calls to backend here
-  const addProject = (newProject) => {
-    setProjects((prevProjects) => [...prevProjects, newProject]);
+  // Add a new project - make calls to backend here
+  const addProject = async (newProject) => {
+    try {
+      const managerId = Cookies.get("user_id");
+
+      // API call to create a new project
+      const response = await fetch(`http://127.0.0.1:5050/project/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: newProject.name,
+          description: newProject.description,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to create project: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      // Add the newly created project with the ID from the server
+      const createdProject = {
+        ...newProject,
+        _id: result.project_id, // Use the ID returned from the server
+      };
+
+      setProjects((prevProjects) => [...prevProjects, createdProject]);
+      setNoProjects(false); // We now have at least one project
+    } catch (err) {
+      console.error("Error creating project:", err);
+      // Optionally show an error message to the user
+    }
   };
 
   return (
@@ -115,21 +162,34 @@ const ManagementBoard = () => {
         New Project
       </button>
 
-      {loading && <p>Loading projects...</p>}
-      {error && <p>Error: {error}</p>}
+      {loading && <p className="status-message">Loading projects...</p>}
+      {error && <p className="error-message">Error: {error}</p>}
+      {!loading && !error && noProjects && (
+        <div className="no-projects-container">
+          <p className="no-projects-message">
+            You don't have any projects yet. Create your first project by
+            clicking the "New Project" button above.
+          </p>
+        </div>
+      )}
 
       {/* Project Cards Section */}
-      <div className="project-cards">
-        {projects.map((project) => (
-          <div key={project.id} className="project-card">
-            <h3>{project.name}</h3>
-            <p>{project.description}</p>
-            <Link to={`/project/${project.id}`} className="project-link">
-              View Project
-            </Link>
-          </div>
-        ))}
-      </div>
+      {!loading && !error && projects.length > 0 && (
+        <div className="project-cards">
+          {projects.map((project) => (
+            <div key={project._id || project.id} className="project-card">
+              <h3>{project.name}</h3>
+              <p>{project.description}</p>
+              <Link
+                to={`/project/${project._id || project.id}`}
+                className="project-link"
+              >
+                View Project
+              </Link>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Modal to add new project */}
       <AddProjectModal

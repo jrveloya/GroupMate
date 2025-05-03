@@ -25,8 +25,42 @@ def get_announcements(project_id):
         a['project_id'] = str(a['project_id'])
         a['created_by'] = str(a['created_by'])
         a['created_at'] = a['created_at'].isoformat()
-
     return jsonify(announcements)
+
+#Get all announcements for a specific user
+@announcement_bp.route('/user', methods=['GET'])
+@jwt_required()
+def get_announcements_for_user():
+    db = get_db()
+    user_id = get_jwt_identity()
+    user_object_id = ObjectId(user_id)
+    user_projects = list(db.projects.find({
+        "$or": [
+            {"member_ids": user_object_id},
+            {"manager_id": user_object_id}  # Include if user is manager
+        ]
+    }))
+    project_ids = [project["_id"] for project in user_projects]
+
+    # Get all announcements for these projects
+    announcements = list(db.announcements.find({
+        "project_id": {"$in": project_ids}
+    })) 
+    for announcement in announcements:
+        announcement['_id'] = str(announcement['_id'])
+        announcement['project_id'] = str(announcement['project_id'])
+        announcement['created_by'] = str(announcement['created_by'])
+        announcement['created_at'] = announcement['created_at'].isoformat()
+        project = next((p for p in user_projects if str(p["_id"]) == announcement["project_id"]), None)
+        if project:
+            announcement['project_name'] = project.get('name', 'Unknown Project')
+        else:
+            announcement['project_name'] = 'Unknown Project'
+    
+    print(announcements)
+    return jsonify(announcements)
+
+    
 
 @announcement_bp.route('/', methods = ['POST'])
 @jwt_required()
