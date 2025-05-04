@@ -4,5 +4,4 @@ Login and Register basically done (functionally)
 Completed tasks page
 
 To do
-Management view
-Settings page
+Updates and deletes for tasks, projects, users, announcements, and comments
