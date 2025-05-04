@@ -125,7 +125,8 @@ const ManagementBoard = () => {
       // Log the request data for debugging
       console.log("Creating project with data:", {
         name: newProject.name,
-        description: newProject.description || "", // Ensure description is never undefined
+        description: newProject.description || "",
+        manager_id: managerId,
       });
 
       // API call to create a new project

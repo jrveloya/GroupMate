@@ -10,12 +10,13 @@ project_bp = Blueprint('project', __name__)
 @jwt_required()
 def create_project_route():
     data = request.get_json()
-    
+    print(data)
     user_id = get_jwt_identity()
     user = get_user_by_id(user_id)
     
     if user['role'] != 'manager':
         return jsonify({'error' : 'Only managers can create projects.'}), 403
+    print(data, user_id)
     project_id = create_project(
         name=data['name'],
         description=data.get('description', ''),

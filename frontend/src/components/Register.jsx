@@ -63,7 +63,7 @@ const Register = () => {
         if (data.role) {
           Cookies.set("role", data.role, { expires: 7 });
         }
-
+        console.log(localStorage.getItem("access_token"));
         setError("");
         navigate("/dashboard");
       } else {

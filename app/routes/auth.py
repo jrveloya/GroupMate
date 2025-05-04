@@ -32,11 +32,13 @@ def signup():
     }
 
     user_id = db.users.insert_one(new_user).inserted_id
-
+    access_token = create_access_token(identity=str(user_id))
+    
     return jsonify({
         "message": "User created successfully",
         "role": role, #To be used as a cookie
-        "user_id": str(user_id)
+        "user_id": str(user_id),
+        "access_token": access_token,
     }), 201
 
 
