@@ -107,7 +107,6 @@ const MembersModal = ({
                         </span>
                       )}
                     </div>
-                    <span className="member-id">ID: {member.member_id}</span>
                   </div>
                   <div className="member-actions">
                     {member.member_id !== currentUserId &&

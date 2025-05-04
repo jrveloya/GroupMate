@@ -161,9 +161,16 @@ select {
   color: white;
   font-size: 1rem;
   cursor: pointer;
-  margin-top: 10px;
 }
 
+/* Buttons */
+.add-task-btn,
+.add-announcement-btn,
+.update-task-btn,
+.update-announcement-btn,
+.edit-toggle-btn {
+  margin-top: 10px;
+}
 .add-task-btn,
 .add-announcement-btn,
 .update-task-btn,
@@ -292,6 +299,7 @@ select {
   padding: 6px 10px;
   font-size: 12px;
   cursor: pointer;
+  margin-top: 0; /* Added this line to remove the top margin */
 }
 
 .remove-member-btn:hover {

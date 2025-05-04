@@ -140,10 +140,6 @@
   padding: 10px;
 }
 
-.modal-content button {
-  margin-top: 50px;
-}
-
 /* View Members Button */
 .view-members-btn {
   padding: 8px 16px;
@@ -225,7 +221,6 @@
 .error-message,
 .no-project-message,
 .no-items-message {
-  text-align: center;
   padding: 20px;
   color: #666;
 }
