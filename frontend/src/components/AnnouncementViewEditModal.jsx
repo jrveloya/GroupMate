@@ -38,10 +38,10 @@ const AnnouncementViewEditModal = ({
       };
 
       await onUpdateAnnouncement(updatedAnnouncement);
-      setIsEditing(false);
+      // After successful update, close the modal
+      onClose();
     } catch (err) {
       setError(err.message || "Failed to update announcement");
-    } finally {
       setLoading(false);
     }
   };

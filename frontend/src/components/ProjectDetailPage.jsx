@@ -393,6 +393,40 @@ const ProjectDetailPage = () => {
     setSelectedAnnouncement(null);
   };
 
+  // Delete a task
+  const deleteTask = async (taskId) => {
+    try {
+      const token = localStorage.getItem("access_token");
+
+      const response = await fetch(`http://127.0.0.1:5050/tasks/${taskId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Authentication failed. Please log in again.");
+        } else if (response.status === 403) {
+          throw new Error("You don't have permission to delete this task.");
+        } else if (response.status === 404) {
+          throw new Error("Task not found or may have been already deleted.");
+        }
+        throw new Error(`Failed to delete task: ${response.status}`);
+      }
+
+      // Refresh tasks list after successful deletion
+      fetchTasksForProject();
+
+      return { success: true };
+    } catch (err) {
+      console.error("Error deleting task:", err);
+      throw err;
+    }
+  };
+
   return (
     <div className="project-detail-page">
       {loading ? (
@@ -513,6 +547,7 @@ const ProjectDetailPage = () => {
             task={selectedTask}
             members={project.members}
             onUpdateTask={updateTask}
+            onDeleteTask={deleteTask}
           />
 
           <AddAnnouncementModal
