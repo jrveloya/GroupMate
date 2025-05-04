@@ -98,3 +98,33 @@ def add_user_to_project_route(project_id):
     add_user_to_project(username, project_id)
 
     return jsonify({"message" : "Added " + username})
+
+@project_bp.route('/user/<project_id>', methods=['DELETE'])
+@jwt_required()
+def remove_user_from_project_route(project_id):
+    db = get_db()
+    current_user_id = get_jwt_identity()
+    request_data = request.get_json()
+    if not request_data or 'user_id' not in request_data:
+        return jsonify({"error": "Missing user_id in request body"}), 400
+    
+    user_id_to_remove = request_data['user_id']
+    project = db.projects.find_one({"_id": ObjectId(project_id)})
+    if not project:
+        return jsonify({"error": "Project not found"}), 404
+    
+    # Check if the current user is the project owner or has permission to modify members
+    if str(project.get('manager_id')) != current_user_id:
+        return jsonify({"error": "Not authorized to modify this project"}), 403
+    
+    if 'member_ids' not in project or ObjectId(user_id_to_remove) not in project['member_ids']:
+        return jsonify({"message": "User is not a member of this project"}), 400
+    
+    result = db.projects.update_one(
+        {"_id": ObjectId(project_id)},
+        {"$pull": {"member_ids": ObjectId(user_id_to_remove)}}
+    )
+    if result.modified_count > 0:
+            return jsonify({"message": "User successfully removed from project"}), 200
+    else:
+        return jsonify({"message": "Failed to remove user from project"}), 500

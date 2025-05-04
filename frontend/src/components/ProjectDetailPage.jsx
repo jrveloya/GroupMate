@@ -427,6 +427,48 @@ const ProjectDetailPage = () => {
     }
   };
 
+  // Remove user from project
+  const removeUserFromProject = async (userId) => {
+    try {
+      const token = localStorage.getItem("access_token");
+
+      const response = await fetch(
+        `http://127.0.0.1:5050/project/user/${projectId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ user_id: userId }),
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error("Project not found");
+        } else if (response.status === 403) {
+          throw new Error(
+            "You don't have permission to remove users from this project"
+          );
+        } else if (response.status === 400) {
+          throw new Error("User is not a member of this project");
+        }
+        throw new Error("Failed to remove user");
+      }
+
+      const result = await response.json();
+
+      // Refresh project data to get updated members list
+      fetchProjectData();
+
+      return result;
+    } catch (err) {
+      console.error("Error removing user:", err);
+      throw err;
+    }
+  };
+
   return (
     <div className="project-detail-page">
       {loading ? (
@@ -568,6 +610,10 @@ const ProjectDetailPage = () => {
             onClose={() => setIsMembersModalOpen(false)}
             members={project.members}
             onAddUser={addUserToProject}
+            onRemoveUser={removeUserFromProject}
+            projectId={projectId}
+            currentUserId={localStorage.getItem("user_id") || ""}
+            ownerId={project.owner_id || project.manager_id || ""}
           />
         </>
       ) : (

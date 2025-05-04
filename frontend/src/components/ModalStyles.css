@@ -260,6 +260,7 @@ select {
   border-bottom: 1px solid #eee;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
@@ -276,6 +277,30 @@ select {
 .member-id {
   font-size: 12px;
   color: #666;
+}
+
+.member-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.remove-member-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.remove-member-btn:hover {
+  background-color: #d32f2f;
+}
+
+.remove-member-btn:disabled {
+  background-color: #ffcdd2;
+  cursor: not-allowed;
 }
 
 .no-members {
