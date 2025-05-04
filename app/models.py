@@ -300,3 +300,13 @@ def create_announcement(project_id, user_id, title, content):
     }
     result = db.announcements.insert_one(announcement)
     return str(result.inserted_id)
+
+"""
+This updates a task based on the updates received
+@param
+    task_id : the unique ID for the task
+    updates : a dictionary of updates correlating to the schema definition of a task
+"""
+def update_announcement(announcment_id, updates):
+    db = get_db()
+    return db.announcements.update_one({"_id" : ObjectId(announcment_id)}, {"$set" : updates})

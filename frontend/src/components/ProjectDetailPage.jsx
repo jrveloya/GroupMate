@@ -433,7 +433,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://127.0.0.1:5050/project/user/${projectId}`,
+        `http://127.0.0.1:5050/project/remove-user/${projectId}`,
         {
           method: "DELETE",
           headers: {
@@ -465,6 +465,47 @@ const ProjectDetailPage = () => {
       return result;
     } catch (err) {
       console.error("Error removing user:", err);
+      throw err;
+    }
+  };
+
+  // Delete an announcement
+  const deleteAnnouncement = async (announcementId) => {
+    try {
+      const token = localStorage.getItem("access_token");
+
+      const response = await fetch(
+        `http://127.0.0.1:5050/announcement/${announcementId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Authentication failed. Please log in again.");
+        } else if (response.status === 403) {
+          throw new Error(
+            "You don't have permission to delete this announcement."
+          );
+        } else if (response.status === 404) {
+          throw new Error(
+            "Announcement not found or may have been already deleted."
+          );
+        }
+        throw new Error(`Failed to delete announcement: ${response.status}`);
+      }
+
+      // Refresh announcements list after successful deletion
+      fetchAnnouncementsForProject();
+
+      return { success: true };
+    } catch (err) {
+      console.error("Error deleting announcement:", err);
       throw err;
     }
   };
@@ -603,6 +644,7 @@ const ProjectDetailPage = () => {
             onClose={closeAnnouncementViewModal}
             announcement={selectedAnnouncement}
             onUpdateAnnouncement={updateAnnouncement}
+            onDeleteAnnouncement={deleteAnnouncement}
           />
 
           <MembersModal

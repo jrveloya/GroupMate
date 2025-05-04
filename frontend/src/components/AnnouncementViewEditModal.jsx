@@ -7,17 +7,24 @@ const AnnouncementViewEditModal = ({
   onClose,
   announcement,
   onUpdateAnnouncement,
+  onDeleteAnnouncement,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [announcementTitle, setAnnouncementTitle] = useState("");
   const [announcementContent, setAnnouncementContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
   useEffect(() => {
     if (announcement) {
       setAnnouncementTitle(announcement.title || "");
       setAnnouncementContent(announcement.content || "");
+      // Reset editing state when a new announcement is loaded
+      setIsEditing(false);
+      setError("");
+      setLoading(false);
+      setIsConfirmingDelete(false);
     }
   }, [announcement]);
 
@@ -43,6 +50,30 @@ const AnnouncementViewEditModal = ({
     } catch (err) {
       setError(err.message || "Failed to update announcement");
       setLoading(false);
+      // Reset editing state if there's an error
+      setIsEditing(false);
+    }
+  };
+
+  const handleDeleteClick = () => {
+    setIsConfirmingDelete(true);
+  };
+
+  const handleCancelDelete = () => {
+    setIsConfirmingDelete(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      await onDeleteAnnouncement(announcement._id);
+      onClose();
+    } catch (err) {
+      setError(err.message || "Failed to delete announcement");
+      setLoading(false);
+      setIsConfirmingDelete(false);
     }
   };
 
@@ -56,15 +87,39 @@ const AnnouncementViewEditModal = ({
         </button>
         <div className="modal-header">
           <h2>{isEditing ? "Edit Announcement" : announcement.title}</h2>
-          <button
-            className={`edit-toggle-btn ${isEditing ? "cancel" : "edit"}`}
-            onClick={handleEditToggle}
-          >
-            {isEditing ? "Cancel" : "Edit"}
-          </button>
+          <div className="modal-actions">
+            <button
+              className={`edit-toggle-btn ${isEditing ? "cancel" : "edit"}`}
+              onClick={handleEditToggle}
+              disabled={isConfirmingDelete}
+            >
+              {isEditing ? "Cancel" : "Edit"}
+            </button>
+          </div>
         </div>
 
-        {isEditing ? (
+        {isConfirmingDelete ? (
+          <div className="delete-confirmation">
+            <p>Are you sure you want to delete this announcement?</p>
+            <p className="delete-warning">This action cannot be undone.</p>
+            <div className="delete-actions">
+              <button
+                className="cancel-delete-btn"
+                onClick={handleCancelDelete}
+                disabled={loading}
+              >
+                Cancel
+              </button>
+              <button
+                className="confirm-delete-btn"
+                onClick={handleConfirmDelete}
+                disabled={loading}
+              >
+                {loading ? "Deleting..." : "Yes, Delete"}
+              </button>
+            </div>
+          </div>
+        ) : isEditing ? (
           <form
             className="announcement-form"
             onSubmit={handleUpdateAnnouncement}
@@ -103,6 +158,13 @@ const AnnouncementViewEditModal = ({
                 {new Date(announcement.created_at).toLocaleTimeString()}
               </small>
             </p>
+
+            {/* Delete button placed at the bottom */}
+            <div className="bottom-actions">
+              <button className="delete-btn" onClick={handleDeleteClick}>
+                Delete Announcement
+              </button>
+            </div>
           </div>
         )}
       </div>

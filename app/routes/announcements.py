@@ -1,7 +1,8 @@
+from datetime import datetime, timezone
 from bson import ObjectId
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from app.models import create_announcement, get_db
+from app.models import create_announcement, get_db, update_announcement
 
 announcement_bp = Blueprint('announcement', __name__)
 
@@ -86,4 +87,26 @@ def create_announcement_route():
         "message" : "Announcement Created",
         "announcement_id" : announcement_id
     }), 201
-    
+
+
+@announcement_bp.route('/<announcement_id>', methods=['PUT'])
+@jwt_required()
+def update_announcement_route(announcement_id):
+    data = request.get_json()
+    updates = {
+        "title" : data.get('title'),
+        "content" : data.get('content'),
+        "updated_at" : datetime.now(timezone.utc)
+    }
+    updates = {k : v for k,v in updates.items() if v is not None}
+    results = update_announcement(announcement_id, updates)
+    if results.matched_count == 0:
+        return jsonify({'error': 'Announcement not found'}), 404
+    return jsonify({"message" : "Announcement Updated."}), 200
+
+@announcement_bp.route('/<announcement_id>', methods=['DELETE'])
+@jwt_required()
+def delete_announcement(announcement_id):
+    db = get_db()
+    db.announcements.delete_one({"_id" : ObjectId(announcement_id)})
+    return jsonify({"message" : "Announcement deleted."})
