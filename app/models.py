@@ -257,10 +257,11 @@ def get_task_list_through_asignee_id(asignee_id):
 
 # ----------COMMENT ----------
 
-def create_task_comment(content, user_id, task_id, username):
+def create_task_comment(content, user_id, task_id, username, comment_id):
     db = get_db()
     task_comment = {
         "user_id" : ObjectId(user_id),
+        "_id" : ObjectId(comment_id),
         "username" : username,
         "content" : content,
         "task_id" : ObjectId(task_id),

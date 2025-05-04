@@ -1,10 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import "./TaskModal.css";
 
-const TaskModal = ({ task, onClose, onComplete, onComment }) => {
+const TaskModal = ({
+  task,
+  onClose,
+  onComplete,
+  onComment,
+  onDeleteComment,
+}) => {
   const [comment, setComment] = useState("");
   const [colorMap, setColorMap] = useState({});
+  const [currentUserId, setCurrentUserId] = useState(null);
+
+  // Get the current user's ID when the component mounts
+  useEffect(() => {
+    const userId = Cookies.get("user_id");
+    if (userId) {
+      setCurrentUserId(userId);
+    }
+  }, []);
+
+  // Helper function to check if the current user can delete a comment
+  const canDeleteComment = (comment) => {
+    // If no current user ID is available, don't allow deletion
+    if (!currentUserId) return false;
+
+    // Check if the user is the comment owner
+    return currentUserId === comment.user_id;
+  };
 
   // Helper function to generate a color from a name using a simple formula
   const getColorForCommenter = (name) => {
@@ -85,6 +109,12 @@ const TaskModal = ({ task, onClose, onComplete, onComment }) => {
     }
   };
 
+  const handleDeleteComment = (commentId) => {
+    if (window.confirm("Are you sure you want to delete this comment?")) {
+      onDeleteComment(commentId);
+    }
+  };
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -109,6 +139,8 @@ const TaskModal = ({ task, onClose, onComplete, onComment }) => {
                   const commenterColor = getColorForCommenter(
                     comment.commenterName
                   );
+                  const isOwner = canDeleteComment(comment);
+
                   return (
                     <li
                       key={index}
@@ -117,10 +149,39 @@ const TaskModal = ({ task, onClose, onComplete, onComment }) => {
                         borderLeftColor: commenterColor,
                       }}
                     >
-                      <strong style={{ color: commenterColor }}>
-                        {comment.commenterName}:
-                      </strong>{" "}
-                      {comment.text}
+                      <div className="comment-content">
+                        <div className="comment-text">
+                          <strong style={{ color: commenterColor }}>
+                            {comment.commenterName}:
+                          </strong>{" "}
+                          {comment.text}
+                          {/* Add debug info - remove in production */}
+                          {process.env.NODE_ENV === "development" && (
+                            <div
+                              style={{
+                                fontSize: "10px",
+                                color: "#888",
+                                marginTop: "4px",
+                              }}
+                            >
+                              ID: {comment.id || "none"}, User:{" "}
+                              {comment.user_id || "none"}, Current:{" "}
+                              {currentUserId || "none"}, Owner:{" "}
+                              {isOwner ? "Yes" : "No"}
+                            </div>
+                          )}
+                        </div>
+                        {/* Only show delete button for comments the user owns */}
+                        {isOwner && (
+                          <button
+                            className="delete-comment-btn"
+                            onClick={() => handleDeleteComment(comment.id)}
+                            title="Delete comment"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
                     </li>
                   );
                 })}

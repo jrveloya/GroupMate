@@ -278,3 +278,40 @@
     padding: 10px 15px;
   }
 }
+
+/* Add these styles to your existing TaskModal.css file */
+
+.comment-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.delete-comment-btn {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 5px;
+  margin-left: 8px;
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.delete-comment-btn:hover {
+  background-color: #f56565;
+  color: white;
+}
+
+.comment-item {
+  /* Ensure existing styles continue to work */
+  position: relative;
+}

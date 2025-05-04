@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TaskModal from "./TaskModal";
+import Cookies from "js-cookie";
 import "./Taskboard.css";
 
 const Taskboard = () => {
@@ -38,8 +39,10 @@ const Taskboard = () => {
         due_date: task.updated_at,
         project: { id: task.project_id, name: task.project },
         comments: task.comments.map((c) => ({
+          id: c._id, // Make sure to include the comment ID
           commenterName: c.username || "Unknown", // fallback if backend doesn't include name
           text: c.content || "",
+          user_id: c.user_id,
         })),
       }));
 
@@ -106,6 +109,13 @@ const Taskboard = () => {
       // Ensure commenterName is not undefined
       const safeCommenterName = commenterName || "Anonymous";
 
+      // Get the current user ID
+      const userId = Cookies.get("user_id");
+      if (!userId) {
+        console.error("No user ID found in cookies");
+        return;
+      }
+
       const response = await fetch("http://127.0.0.1:5050/comments/", {
         method: "POST",
         headers: {
@@ -122,11 +132,22 @@ const Taskboard = () => {
         throw new Error("Failed to post comment");
       }
 
-      // Create the new comment object with a safe name
+      const data = await response.json();
+      console.log("Comment response:", data);
+
+      // The backend should return the comment ID in the response
+      // If not, create a temporary ID
+      const commentId = data.comment_id || `temp-${Date.now()}`;
+
+      // Create the new comment object with ID and user_id
       const newCommentObj = {
+        id: commentId,
+        user_id: userId, // Set the current user's ID
         commenterName: safeCommenterName,
         text: newComment,
       };
+
+      console.log("Adding new comment:", newCommentObj);
 
       // Update the selectedTask state with the new comment
       setSelectedTask({
@@ -147,6 +168,54 @@ const Taskboard = () => {
       );
     } catch (err) {
       console.error("Error posting comment:", err);
+    }
+  };
+
+  // Add a new function to handle comment deletion
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const token = localStorage.getItem("access_token");
+
+      const response = await fetch(
+        `http://127.0.0.1:5050/comments/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete comment");
+      }
+
+      // If deletion was successful, update the UI
+      // Update the selectedTask state
+      setSelectedTask({
+        ...selectedTask,
+        comments: selectedTask.comments.filter(
+          (comment) => comment.id !== commentId
+        ),
+      });
+
+      // Update the tasks array
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === selectedTask.id
+            ? {
+                ...task,
+                comments: task.comments.filter(
+                  (comment) => comment.id !== commentId
+                ),
+              }
+            : task
+        )
+      );
+
+      console.log("Comment deleted successfully");
+    } catch (err) {
+      console.error("Error deleting comment:", err);
     }
   };
 
@@ -196,6 +265,7 @@ const Taskboard = () => {
           onClose={handleModalClose}
           onComplete={() => handleCompleteTask(selectedTask.id)}
           onComment={handleCommentSubmit}
+          onDeleteComment={handleDeleteComment}
         />
       )}
     </div>

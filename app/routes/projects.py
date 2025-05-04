@@ -10,13 +10,11 @@ project_bp = Blueprint('project', __name__)
 @jwt_required()
 def create_project_route():
     data = request.get_json()
-    print(data)
     user_id = get_jwt_identity()
     user = get_user_by_id(user_id)
     
     if user['role'] != 'manager':
         return jsonify({'error' : 'Only managers can create projects.'}), 403
-    print(data, user_id)
     project_id = create_project(
         name=data['name'],
         description=data.get('description', ''),
@@ -41,14 +39,12 @@ def get_project_route(project_id):
     for member in project["member_ids"]:
         name = get_user_by_id(member)["username"]
         project["members"].append({"member_id": str(member), "username": name}) #Attach the usernames to each member
-    print(project)
     project = convert_objectid_to_str(project)
     return jsonify(project)
 
 @project_bp.route('/manager/<manager_id>', methods=['GET'])
 @jwt_required()
 def get_project_by_manger_route(manager_id):
-    print("hit")
     project = get_projects_by_manager_id(manager_id)
     if not project:
         return jsonify({

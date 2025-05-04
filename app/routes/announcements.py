@@ -57,8 +57,7 @@ def get_announcements_for_user():
             announcement['project_name'] = project.get('name', 'Unknown Project')
         else:
             announcement['project_name'] = 'Unknown Project'
-    
-    print(announcements)
+
     return jsonify(announcements)
 
     
