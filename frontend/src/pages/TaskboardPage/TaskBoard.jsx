@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import TaskModal from "./TaskModal";
+import TaskModal from "../../components/TaskModal";
 import Cookies from "js-cookie";
 import "./Taskboard.css";
 

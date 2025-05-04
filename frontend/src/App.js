@@ -1,14 +1,12 @@
 import "./App.css";
-import Auth from "./components/Auth";
-import TaskBoard from "./components/TaskBoard";
+import Auth from "./pages/AuthPage/Auth";
+import TaskBoard from "./pages/TaskboardPage/TaskBoard";
 import Navbar from "./components/Navbar";
-import Register from "./components/Register";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
-import CompletedTasks from "./components/CompletedTasks";
-import Settings from "./components/Settings";
-import ManagementBoard from "./components/ManagementBoard";
-import ProjectDetailPage from "./components/ProjectDetailPage";
+import Dashboard from "./pages/DashboardPage/Dashboard";
+import CompletedTasks from "./pages/CompletedTaskPage/CompletedTasks";
+import Settings from "./pages/SettingsPage/Settings";
+import ManagementBoard from "./pages/ManagementBoardPage/ManagementBoard";
+import ProjectDetailPage from "./pages/ProjectPage/ProjectDetailPage";
 import {
   BrowserRouter as Router,
   Routes,
@@ -39,8 +37,6 @@ function App() {
           <Route path="/tasks" element={<TaskBoard />} />
           <Route path="/completed-tasks" element={<CompletedTasks />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/management-board" element={<ManagementBoard />} />
           <Route path="/project/:projectId" element={<ProjectDetailPage />} />

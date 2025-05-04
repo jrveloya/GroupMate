@@ -3,11 +3,11 @@ import { useParams } from "react-router";
 import "./ProjectDetailPage.css";
 
 // Import Modal Components from the same folder
-import AddTaskModal from "./AddTaskModal";
-import AddAnnouncementModal from "./AddAnnouncementModal";
-import MembersModal from "./MembersModal";
-import TaskViewEditModal from "./TaskViewEditModal";
-import AnnouncementViewEditModal from "./AnnouncementViewEditModal";
+import AddTaskModal from "../../components/AddTaskModal";
+import AddAnnouncementModal from "../../components/AddAnnouncementModal";
+import MembersModal from "../../components/MembersModal";
+import TaskViewEditModal from "../../components/TaskViewEditModal";
+import AnnouncementViewEditModal from "../../components/AnnouncementViewEditModal";
 
 // Project Detail Page Component
 const ProjectDetailPage = () => {
