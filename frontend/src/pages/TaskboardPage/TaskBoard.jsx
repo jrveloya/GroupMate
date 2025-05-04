@@ -136,9 +136,7 @@ const Taskboard = () => {
       const data = await response.json();
       console.log("Comment response:", data);
 
-      // The backend should return the comment ID in the response
-      // If not, create a temporary ID
-      const commentId = data.comment_id || `temp-${Date.now()}`;
+      const commentId = data.comment_id;
 
       // Create the new comment object with ID and user_id
       const newCommentObj = {
