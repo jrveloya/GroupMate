@@ -233,13 +233,6 @@ const Taskboard = () => {
     return groups;
   }, {});
 
-  // Function to format date to a readable format
-  const formatDate = (dateString) => {
-    if (!dateString) return "No due date";
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
-  };
-
   return (
     <div className="taskboard-container">
       <div className="taskboard-header">

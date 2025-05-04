@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import "./ProjectDetailPage.css";
+import Cookies from "js-cookie";
 
 // Import Modal Components from the same folder
 import AddTaskModal from "../../components/AddTaskModal";
@@ -82,7 +83,32 @@ const ProjectDetailPage = () => {
         console.warn(`Could not fetch tasks: ${tasksResponse.status}`);
       } else {
         const tasksData = await tasksResponse.json();
-        setTasks(tasksData);
+
+        // Transform comments to match TaskBoard format if needed
+        const transformedTasks = tasksData.map((task) => {
+          // If comments exist but need transformation
+          if (task.comments && Array.isArray(task.comments)) {
+            return {
+              ...task,
+              comments: task.comments.map((c) => ({
+                id: c._id || c.id,
+                commenterName: c.username || c.commenterName || "Unknown",
+                text: c.content || c.text || "",
+                user_id: c.user_id,
+              })),
+            };
+          }
+          // If no comments, add empty array
+          if (!task.comments) {
+            return {
+              ...task,
+              comments: [],
+            };
+          }
+          return task;
+        });
+
+        setTasks(transformedTasks);
       }
 
       // Fetch announcements
@@ -147,7 +173,32 @@ const ProjectDetailPage = () => {
 
       if (tasksResponse.ok) {
         const tasksData = await tasksResponse.json();
-        setTasks(tasksData);
+
+        // Transform comments to match TaskBoard format
+        const transformedTasks = tasksData.map((task) => {
+          // If comments exist but need transformation
+          if (task.comments && Array.isArray(task.comments)) {
+            return {
+              ...task,
+              comments: task.comments.map((c) => ({
+                id: c._id || c.id,
+                commenterName: c.username || c.commenterName || "Unknown",
+                text: c.content || c.text || "",
+                user_id: c.user_id,
+              })),
+            };
+          }
+          // If no comments, add empty array
+          if (!task.comments) {
+            return {
+              ...task,
+              comments: [],
+            };
+          }
+          return task;
+        });
+
+        setTasks(transformedTasks);
       }
     } catch (err) {
       console.error("Error fetching tasks:", err);
@@ -196,6 +247,29 @@ const ProjectDetailPage = () => {
     try {
       const token = localStorage.getItem("access_token");
 
+      // Check if this is just a comment update
+      if (
+        updatedTask.comments &&
+        selectedTask &&
+        updatedTask.title === selectedTask.title &&
+        updatedTask.description === selectedTask.description &&
+        updatedTask.assigned_to === selectedTask.assigned_to
+      ) {
+        // Update the selectedTask state with the updated comments
+        setSelectedTask(updatedTask);
+
+        // Update the tasks array with the updated task
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task._id === updatedTask._id ? updatedTask : task
+          )
+        );
+
+        // No need to make an API call for task update
+        return { success: true };
+      }
+
+      // This is a regular task update, not just comments
       const response = await fetch(
         `http://127.0.0.1:5050/tasks/${updatedTask._id}`,
         {
@@ -228,6 +302,133 @@ const ProjectDetailPage = () => {
       return result;
     } catch (err) {
       console.error("Error updating task:", err);
+      throw err;
+    }
+  };
+
+  // Handle adding a comment to a task
+  const handleAddComment = async (taskId, commentText, commenterName) => {
+    try {
+      // Ensure commenterName is not undefined
+      const safeCommenterName = commenterName || "Anonymous";
+
+      // Get the current user ID
+      const userId = Cookies.get("user_id") || localStorage.getItem("user_id");
+      if (!userId) {
+        console.error("No user ID found");
+        return;
+      }
+
+      const token = localStorage.getItem("access_token");
+
+      const response = await fetch("http://127.0.0.1:5050/comments/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          task_id: taskId,
+          content: commentText,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to post comment");
+      }
+
+      const data = await response.json();
+      console.log("Comment response:", data);
+
+      // The backend should return the comment ID in the response
+      // If not, create a temporary ID
+      const commentId = data.comment_id || `temp-${Date.now()}`;
+
+      // Create the new comment object with ID and user_id
+      const newCommentObj = {
+        id: commentId,
+        user_id: userId, // Set the current user's ID
+        commenterName: safeCommenterName,
+        text: commentText,
+      };
+
+      console.log("Adding new comment:", newCommentObj);
+
+      // Update the selectedTask state with the new comment
+      if (selectedTask && selectedTask._id === taskId) {
+        setSelectedTask({
+          ...selectedTask,
+          comments: [...(selectedTask.comments || []), newCommentObj],
+        });
+      }
+
+      // Update the tasks array
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === taskId
+            ? {
+                ...task,
+                comments: [...(task.comments || []), newCommentObj],
+              }
+            : task
+        )
+      );
+
+      return newCommentObj;
+    } catch (err) {
+      console.error("Error posting comment:", err);
+      throw err;
+    }
+  };
+
+  // Handle deleting a comment
+  const handleDeleteComment = async (taskId, commentId) => {
+    try {
+      const token = localStorage.getItem("access_token");
+
+      const response = await fetch(
+        `http://127.0.0.1:5050/comments/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete comment");
+      }
+
+      // If deletion was successful, update the UI
+      // Update the selectedTask state
+      if (selectedTask && selectedTask._id === taskId) {
+        setSelectedTask({
+          ...selectedTask,
+          comments: selectedTask.comments.filter(
+            (comment) => comment.id !== commentId
+          ),
+        });
+      }
+
+      // Update the tasks array
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === taskId
+            ? {
+                ...task,
+                comments: task.comments.filter(
+                  (comment) => comment.id !== commentId
+                ),
+              }
+            : task
+        )
+      );
+
+      console.log("Comment deleted successfully");
+      return { success: true };
+    } catch (err) {
+      console.error("Error deleting comment:", err);
       throw err;
     }
   };
@@ -433,7 +634,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://127.0.0.1:5050/project/remove-user/${projectId}`,
+        `http://127.0.0.1:5050/project/user/${projectId}`,
         {
           method: "DELETE",
           headers: {
@@ -560,6 +761,15 @@ const ProjectDetailPage = () => {
                         <strong>Assigned to:</strong>{" "}
                         {task.assigned_to_username}
                       </p>
+                      {/* Display comment count if available */}
+                      {task.comments && task.comments.length > 0 && (
+                        <div className="task-footer">
+                          <span className="comment-count">
+                            {task.comments.length} comment
+                            {task.comments.length !== 1 ? "s" : ""}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   ))
                 ) : (
@@ -630,6 +840,8 @@ const ProjectDetailPage = () => {
             members={project.members}
             onUpdateTask={updateTask}
             onDeleteTask={deleteTask}
+            onComment={handleAddComment}
+            onDeleteComment={handleDeleteComment}
           />
 
           <AddAnnouncementModal

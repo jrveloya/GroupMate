@@ -6,50 +6,70 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-}
-/* Bottom actions */
-.bottom-actions {
-  margin-top: 30px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-  display: flex;
-  justify-content: flex-end;
+  animation: fadeIn 0.2s ease-out;
+  padding: 20px;
 }
 
-.bottom-actions .delete-btn {
-  width: auto;
-  padding: 10px 20px;
-  font-size: 1rem;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-content {
   background-color: white;
   padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
   width: 90%;
-  max-width: 500px;
-  max-height: 80vh;
+  max-width: 700px;
+  max-height: 85vh;
   overflow-y: auto;
   position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .close-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
+  top: 15px;
+  right: 15px;
+  background-color: transparent;
   border: none;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
-  color: #888;
+  color: #777;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  border-radius: 50%;
 }
 
 .close-btn:hover {
+  background-color: #f1f1f1;
   color: #333;
 }
 
@@ -63,9 +83,32 @@
   border-bottom: 1px solid #eee;
 }
 
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #2d3748;
+  padding-right: 30px;
+  font-weight: 600;
+}
+
 .modal-actions {
   display: flex;
   gap: 10px;
+}
+
+/* Bottom actions */
+.bottom-actions {
+  margin-top: 30px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bottom-actions .delete-btn {
+  width: auto;
+  padding: 10px 20px;
+  font-size: 1rem;
 }
 
 /* Delete Button and Confirmation */
@@ -163,7 +206,6 @@ select {
   cursor: pointer;
 }
 
-/* Buttons */
 .add-task-btn,
 .add-announcement-btn,
 .update-task-btn,
@@ -171,6 +213,7 @@ select {
 .edit-toggle-btn {
   margin-top: 10px;
 }
+
 .add-task-btn,
 .add-announcement-btn,
 .update-task-btn,
@@ -251,72 +294,6 @@ select {
   margin-bottom: 10px;
 }
 
-/* Members Modal specific */
-.members-modal {
-  max-width: 600px;
-}
-
-.members-list {
-  margin-top: 20px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.member-item {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.member-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.member-username {
-  font-weight: bold;
-  font-size: 16px;
-}
-
-.member-id {
-  font-size: 12px;
-  color: #666;
-}
-
-.member-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.remove-member-btn {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  margin-top: 0; /* Added this line to remove the top margin */
-}
-
-.remove-member-btn:hover {
-  background-color: #d32f2f;
-}
-
-.remove-member-btn:disabled {
-  background-color: #ffcdd2;
-  cursor: not-allowed;
-}
-
-.no-members {
-  text-align: center;
-  padding: 20px;
-  color: #666;
-}
-
 /* Task and Announcement Details */
 .task-details,
 .announcement-details {
@@ -333,10 +310,200 @@ select {
 .assigned-to {
   margin-top: 15px;
   color: #555;
+  margin-bottom: 20px;
 }
 
 .announcement-meta {
   margin-top: 15px;
   color: #777;
   font-size: 0.8rem;
+}
+
+/* COMMENT SECTION STYLES */
+
+.comment-section {
+  margin-top: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.comment-section h4 {
+  font-size: 1.2rem;
+  margin: 0 0 15px 0;
+  color: #2d3748;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.comment-section h4::before {
+  content: "💬";
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+.comment-list-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: 1px solid #edf2f7;
+  padding: 5px;
+  background-color: #f8fafc;
+  max-height: 250px;
+}
+
+.comment-list {
+  list-style-type: none;
+  padding: 8px;
+  margin: 0;
+}
+
+.comment-item {
+  background-color: white;
+  margin-bottom: 10px;
+  padding: 12px 15px;
+  border-left: 4px solid transparent;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.3s;
+  position: relative;
+}
+
+.comment-item:hover {
+  transform: translateX(2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.comment-item strong {
+  color: inherit;
+  margin-right: 5px;
+}
+
+.comment-item:last-child {
+  margin-bottom: 0;
+}
+
+.comment-inputs {
+  margin-top: 15px;
+}
+
+.comment-inputs textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  margin-bottom: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.comment-inputs textarea:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+}
+
+.comment-inputs button {
+  background: linear-gradient(to right, #4299e1, #3182ce);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: block;
+  margin-left: auto;
+  box-shadow: 0 4px 6px rgba(66, 153, 225, 0.2);
+}
+
+.comment-inputs button:hover {
+  background: linear-gradient(to right, #3182ce, #2b6cb0);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(66, 153, 225, 0.25);
+}
+
+.comment-inputs button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(66, 153, 225, 0.2);
+}
+
+/* Empty state styling */
+.no-comments {
+  text-align: center;
+  padding: 20px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  color: #718096;
+  font-style: italic;
+  border: 1px dashed #e2e8f0;
+}
+
+/* Scrollbar styling */
+.comment-list-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.comment-list-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.comment-list-container::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 10px;
+}
+
+.comment-list-container::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Comment content styling with delete icon */
+.comment-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.comment-text {
+  flex: 1;
+  padding-right: 10px;
+}
+
+/* Delete icon button styles */
+.delete-icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  color: #cbd5e0;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.delete-icon-btn:hover {
+  background-color: #fee2e2;
+  color: #e53e3e;
+}
+
+/* Hide the delete button by default */
+.comment-item .delete-icon-btn {
+  opacity: 0.3;
+}
+
+/* Show the delete button on hover */
+.comment-item:hover .delete-icon-btn {
+  opacity: 1;
 }

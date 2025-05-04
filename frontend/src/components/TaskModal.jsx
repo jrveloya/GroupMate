@@ -12,7 +12,6 @@ const TaskModal = ({
   const [comment, setComment] = useState("");
   const [colorMap, setColorMap] = useState({});
   const [currentUserId, setCurrentUserId] = useState(null);
-  const [activeDropdown, setActiveDropdown] = useState(null);
 
   // Get the current user's ID when the component mounts
   useEffect(() => {
@@ -21,20 +20,6 @@ const TaskModal = ({
       setCurrentUserId(userId);
     }
   }, []);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = () => {
-      if (activeDropdown !== null) {
-        setActiveDropdown(null);
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [activeDropdown]);
 
   // Helper function to check if the current user can delete a comment
   const canDeleteComment = (comment) => {
@@ -127,14 +112,7 @@ const TaskModal = ({
   const handleDeleteComment = (commentId) => {
     if (window.confirm("Are you sure you want to delete this comment?")) {
       onDeleteComment(commentId);
-      setActiveDropdown(null);
     }
-  };
-
-  // Toggle dropdown menu
-  const toggleDropdown = (index, e) => {
-    e.stopPropagation(); // Prevent click from bubbling up
-    setActiveDropdown(activeDropdown === index ? null : index);
   };
 
   // Function to format date
@@ -158,17 +136,9 @@ const TaskModal = ({
         <h3>{task.title}</h3>
         <p>{task.description}</p>
 
-        {task.due_date && (
-          <div className="task-meta">
-            <span className="due-date-label">
-              <i className="due-date-icon">📅</i> Due:{" "}
-              {formatDate(task.due_date)}
-            </span>
-            <span className="project-name">
-              <i className="project-icon">📁</i> {task.project.name}
-            </span>
-          </div>
-        )}
+        <span className="project-name">
+          <i className="project-icon">📁</i> {task.project.name}
+        </span>
 
         <div className="actions">
           <button className="complete-btn" onClick={() => onComplete(task.id)}>
@@ -203,34 +173,15 @@ const TaskModal = ({
                           {comment.text}
                         </div>
 
-                        {/* 3-dot dropdown menu for comment actions */}
+                        {/* Simple delete icon button, visible only if the user is the comment owner */}
                         {isOwner && (
-                          <div className="comment-actions">
-                            <button
-                              className="dropdown-toggle"
-                              onClick={(e) => toggleDropdown(index, e)}
-                              aria-label="Comment options"
-                            >
-                              <span className="dots">
-                                &#8226;&#8226;&#8226;
-                              </span>
-                            </button>
-
-                            {activeDropdown === index && (
-                              <div className="dropdown-menu">
-                                <button
-                                  className="dropdown-item delete-item"
-                                  onClick={() =>
-                                    handleDeleteComment(comment.id)
-                                  }
-                                >
-                                  <i className="delete-icon">🗑️</i> Delete
-                                  comment
-                                </button>
-                                {/* Add more options here if needed */}
-                              </div>
-                            )}
-                          </div>
+                          <button
+                            className="delete-icon-btn"
+                            onClick={() => handleDeleteComment(comment.id)}
+                            aria-label="Delete comment"
+                          >
+                            🗑️
+                          </button>
                         )}
                       </div>
                     </li>
