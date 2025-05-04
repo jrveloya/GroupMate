@@ -12,6 +12,7 @@ const TaskModal = ({
   const [comment, setComment] = useState("");
   const [colorMap, setColorMap] = useState({});
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
   // Get the current user's ID when the component mounts
   useEffect(() => {
@@ -20,6 +21,20 @@ const TaskModal = ({
       setCurrentUserId(userId);
     }
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (activeDropdown !== null) {
+        setActiveDropdown(null);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [activeDropdown]);
 
   // Helper function to check if the current user can delete a comment
   const canDeleteComment = (comment) => {
@@ -112,21 +127,52 @@ const TaskModal = ({
   const handleDeleteComment = (commentId) => {
     if (window.confirm("Are you sure you want to delete this comment?")) {
       onDeleteComment(commentId);
+      setActiveDropdown(null);
     }
+  };
+
+  // Toggle dropdown menu
+  const toggleDropdown = (index, e) => {
+    e.stopPropagation(); // Prevent click from bubbling up
+    setActiveDropdown(activeDropdown === index ? null : index);
+  };
+
+  // Function to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <button className="close-btn" onClick={onClose}>
-          X
+        <button className="close-btn" onClick={onClose} aria-label="Close">
+          ×
         </button>
+
         <h3>{task.title}</h3>
         <p>{task.description}</p>
 
+        {task.due_date && (
+          <div className="task-meta">
+            <span className="due-date-label">
+              <i className="due-date-icon">📅</i> Due:{" "}
+              {formatDate(task.due_date)}
+            </span>
+            <span className="project-name">
+              <i className="project-icon">📁</i> {task.project.name}
+            </span>
+          </div>
+        )}
+
         <div className="actions">
           <button className="complete-btn" onClick={() => onComplete(task.id)}>
-            Mark as Completed
+            <i className="complete-icon">✓</i> Mark as Completed
           </button>
         </div>
 
@@ -155,31 +201,36 @@ const TaskModal = ({
                             {comment.commenterName}:
                           </strong>{" "}
                           {comment.text}
-                          {/* Add debug info - remove in production */}
-                          {process.env.NODE_ENV === "development" && (
-                            <div
-                              style={{
-                                fontSize: "10px",
-                                color: "#888",
-                                marginTop: "4px",
-                              }}
-                            >
-                              ID: {comment.id || "none"}, User:{" "}
-                              {comment.user_id || "none"}, Current:{" "}
-                              {currentUserId || "none"}, Owner:{" "}
-                              {isOwner ? "Yes" : "No"}
-                            </div>
-                          )}
                         </div>
-                        {/* Only show delete button for comments the user owns */}
+
+                        {/* 3-dot dropdown menu for comment actions */}
                         {isOwner && (
-                          <button
-                            className="delete-comment-btn"
-                            onClick={() => handleDeleteComment(comment.id)}
-                            title="Delete comment"
-                          >
-                            ×
-                          </button>
+                          <div className="comment-actions">
+                            <button
+                              className="dropdown-toggle"
+                              onClick={(e) => toggleDropdown(index, e)}
+                              aria-label="Comment options"
+                            >
+                              <span className="dots">
+                                &#8226;&#8226;&#8226;
+                              </span>
+                            </button>
+
+                            {activeDropdown === index && (
+                              <div className="dropdown-menu">
+                                <button
+                                  className="dropdown-item delete-item"
+                                  onClick={() =>
+                                    handleDeleteComment(comment.id)
+                                  }
+                                >
+                                  <i className="delete-icon">🗑️</i> Delete
+                                  comment
+                                </button>
+                                {/* Add more options here if needed */}
+                              </div>
+                            )}
+                          </div>
                         )}
                       </div>
                     </li>
@@ -188,7 +239,9 @@ const TaskModal = ({
               </ul>
             </div>
           ) : (
-            <p>No comments yet.</p>
+            <p className="no-comments">
+              No comments yet. Be the first to add one!
+            </p>
           )}
 
           <div className="comment-inputs">
@@ -196,8 +249,11 @@ const TaskModal = ({
               placeholder="Leave a comment..."
               value={comment}
               onChange={handleCommentChange}
+              aria-label="Comment text"
             />
-            <button onClick={handleCommentSubmit}>Submit Comment</button>
+            <button onClick={handleCommentSubmit}>
+              <i className="submit-icon">💬</i> Submit Comment
+            </button>
           </div>
         </div>
       </div>

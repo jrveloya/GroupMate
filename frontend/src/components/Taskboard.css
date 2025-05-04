@@ -1,19 +1,24 @@
 .taskboard-container {
   padding: 30px;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
+.taskboard-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
 .taskboard-container h2 {
   color: #2d3748;
   font-size: 2.2rem;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   font-weight: 700;
-  text-align: center;
   position: relative;
   padding-bottom: 12px;
+  display: inline-block;
 }
 
 .taskboard-container h2::after {
@@ -28,8 +33,27 @@
   border-radius: 3px;
 }
 
+.taskboard-header p {
+  color: #718096;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 .project-section {
   margin-bottom: 35px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .project-title {
@@ -45,6 +69,12 @@
   display: flex;
   align-items: center;
   border-left: 5px solid #6366f1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-title:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .project-title::before {
@@ -61,7 +91,7 @@
   padding: 0;
 }
 
-/* Task card color - all red */
+/* Task card with hover effect */
 .task-card {
   background-color: #fff;
   padding: 20px;
@@ -77,11 +107,10 @@
   border-left: 5px solid #e53e3e; /* Red border for all task cards */
 }
 
-/* Remove the different color variations */
-
 .task-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: #85b8b8; /* Requested hover color */
 }
 
 .task-card h4 {
@@ -90,6 +119,11 @@
   font-size: 1.15rem;
   color: #2d3748;
   font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.task-card:hover h4 {
+  color: #1a202c;
 }
 
 .task-card p {
@@ -97,14 +131,25 @@
   color: #4a5568;
   line-height: 1.5;
   flex-grow: 1;
+  transition: color 0.3s ease;
+}
+
+.task-card:hover p {
+  color: #2d3748;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  font-size: 0.85rem;
 }
 
 .due-date {
-  font-size: 0.85rem;
   color: #718096;
   display: flex;
   align-items: center;
-  margin-top: auto;
 }
 
 .due-date::before {
@@ -112,16 +157,85 @@
   margin-right: 5px;
 }
 
-/* Loading and empty states */
-.taskboard-container > p {
+.comment-count {
+  color: #718096;
+  display: flex;
+  align-items: center;
+}
+
+.comment-count::before {
+  content: "💬";
+  margin-right: 5px;
+}
+
+/* Loading state */
+.loading-container {
   text-align: center;
-  padding: 30px;
+  padding: 40px;
   background-color: #f7fafc;
   border-radius: 10px;
-  color: #4a5568;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin: 30px auto;
+  max-width: 400px;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(99, 102, 241, 0.1);
+  border-radius: 50%;
+  border-top-color: #6366f1;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 50px 30px;
+  background-color: #f7fafc;
+  border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   margin: 30px auto;
   max-width: 500px;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.empty-state p {
+  margin: 5px 0;
+  color: #4a5568;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.empty-subtext {
+  color: #718096;
+  font-size: 1rem !important;
+  font-weight: normal !important;
 }
 
 /* Responsive adjustments */
@@ -136,5 +250,9 @@
 
   .project-title {
     font-size: 1.3rem;
+  }
+
+  .taskboard-container h2 {
+    font-size: 1.8rem;
   }
 }

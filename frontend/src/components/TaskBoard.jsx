@@ -37,6 +37,7 @@ const Taskboard = () => {
         title: task.title,
         description: task.description,
         due_date: task.updated_at,
+        priority: task.priority || "medium", // Add priority field with default
         project: { id: task.project_id, name: task.project },
         comments: task.comments.map((c) => ({
           id: c._id, // Make sure to include the comment ID
@@ -232,13 +233,33 @@ const Taskboard = () => {
     return groups;
   }, {});
 
+  // Function to format date to a readable format
+  const formatDate = (dateString) => {
+    if (!dateString) return "No due date";
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
   return (
     <div className="taskboard-container">
-      <h2>Your Task Board</h2>
+      <div className="taskboard-header">
+        <h2>Your Task Board</h2>
+        <p>Manage and track your assigned tasks across all projects</p>
+      </div>
+
       {loading ? (
-        <p>Loading tasks...</p>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading your tasks...</p>
+        </div>
       ) : tasks.length === 0 ? (
-        <p>No tasks assigned to you.</p>
+        <div className="empty-state">
+          <div className="empty-icon">📋</div>
+          <p>No tasks assigned to you.</p>
+          <p className="empty-subtext">
+            Enjoy your free time or check back later!
+          </p>
+        </div>
       ) : (
         Object.keys(groupedTasks).map((projectName) => (
           <div key={projectName} className="project-section">
@@ -252,6 +273,14 @@ const Taskboard = () => {
                 >
                   <h4>{task.title}</h4>
                   <p>{task.description}</p>
+                  <div className="task-footer">
+                    {task.comments.length > 0 && (
+                      <span className="comment-count">
+                        {task.comments.length} comment
+                        {task.comments.length !== 1 ? "s" : ""}
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
