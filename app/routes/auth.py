@@ -35,6 +35,7 @@ def signup():
 
     return jsonify({
         "message": "User created successfully",
+        "role": role, #To be used as a cookie
         "user_id": str(user_id)
     }), 201
 

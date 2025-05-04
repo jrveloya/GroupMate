@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import Cookies from "js-cookie";
 import "./Login.css";
 
 const Register = () => {
@@ -7,6 +8,7 @@ const Register = () => {
     username: "",
     password: "",
     confirmPassword: "",
+    isManager: false, // Added manager role state
   });
 
   const [error, setError] = useState("");
@@ -14,15 +16,17 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    const value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { username, password, confirmPassword } = formData;
+    const { username, password, confirmPassword, isManager } = formData;
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
@@ -36,12 +40,30 @@ const Register = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({
+          username,
+          password,
+          role: isManager ? "manager" : "user", // Pass the role based on checkbox
+        }),
       });
 
       if (response.ok) {
         const data = await response.json();
         console.log("User created:", data);
+
+        // If backend returns a JWT token:
+        if (data.access_token) {
+          // Optionally save the token to localStorage
+          localStorage.setItem("access_token", data.access_token);
+        }
+
+        if (data.user_id) {
+          Cookies.set("user_id", data.user_id, { expires: 7 }); // 7 days
+        }
+        if (data.role) {
+          Cookies.set("role", data.role, { expires: 7 });
+        }
+
         setError("");
         navigate("/dashboard");
       } else {
@@ -90,6 +112,16 @@ const Register = () => {
           onChange={handleChange}
           required
         />
+        <div className="checkbox-container">
+          <input
+            type="checkbox"
+            id="isManager"
+            name="isManager"
+            checked={formData.isManager}
+            onChange={handleChange}
+          />
+          <label htmlFor="isManager">Register as Manager</label>
+        </div>
         <button type="submit">Create Account</button>
       </form>
     </div>

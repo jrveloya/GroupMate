@@ -58,6 +58,7 @@ const Login = () => {
 
         setError("");
         navigate("/dashboard");
+        console.log(data.access_token);
       } else {
         const errorData = await response.json();
         setError(errorData.error || "Login failed");

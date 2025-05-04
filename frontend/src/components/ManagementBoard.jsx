@@ -88,8 +88,8 @@ const ManagementBoard = () => {
           }
         );
 
-        if (response.status === 404) {
-          // Handle 404 as an expected condition, not an error
+        // Handle both 404 and 422 as expected "no projects" conditions
+        if (response.status === 404 || response.status === 422) {
           setProjects([]);
           setNoProjects(true); // Set the flag to indicate no projects found
           setLoading(false);
@@ -120,25 +120,44 @@ const ManagementBoard = () => {
   const addProject = async (newProject) => {
     try {
       const managerId = Cookies.get("user_id");
+      const token = localStorage.getItem("access_token");
+
+      // Log the request data for debugging
+      console.log("Creating project with data:", {
+        name: newProject.name,
+        description: newProject.description || "", // Ensure description is never undefined
+      });
 
       // API call to create a new project
-      const response = await fetch(`http://127.0.0.1:5050/project/`, {
+      const response = await fetch("http://127.0.0.1:5050/project/", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: newProject.name,
-          description: newProject.description,
+          description: newProject.description || "",
+          manager_id: managerId,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to create project: ${response.status}`);
-      }
+      console.log("Response status:", response.status);
 
-      const result = await response.json();
+      // Log the response for debugging
+      const responseText = await response.text();
+      console.log("Response body:", responseText);
+
+      // Parse the JSON only if we have content
+      const result = responseText ? JSON.parse(responseText) : {};
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to create project: ${response.status} - ${
+            result.error || "Unknown error"
+          }`
+        );
+      }
 
       // Add the newly created project with the ID from the server
       const createdProject = {
@@ -150,7 +169,8 @@ const ManagementBoard = () => {
       setNoProjects(false); // We now have at least one project
     } catch (err) {
       console.error("Error creating project:", err);
-      // Optionally show an error message to the user
+      setError(err.message || "Failed to create project");
+      // Show the error to the user
     }
   };
 
@@ -166,10 +186,7 @@ const ManagementBoard = () => {
       {error && <p className="error-message">Error: {error}</p>}
       {!loading && !error && noProjects && (
         <div className="no-projects-container">
-          <p className="no-projects-message">
-            You don't have any projects yet. Create your first project by
-            clicking the "New Project" button above.
-          </p>
+          <p className="no-projects-message">No projects created yet.</p>
         </div>
       )}
 

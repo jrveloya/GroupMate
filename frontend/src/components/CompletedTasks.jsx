@@ -4,21 +4,20 @@ import "./CompletedTasks.css";
 const CompletedTasks = () => {
   const [completedTasks, setCompletedTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1); // Track current page
-  const tasksPerPage = 5; // Show 5 tasks per page
+  const [currentPage, setCurrentPage] = useState(1);
+  const tasksPerPage = 5;
 
   const fetchCompletedTasks = async () => {
     try {
       setLoading(true);
 
       const token = localStorage.getItem("access_token");
-      console.log(token);
 
       // Updated URL to match the backend endpoint
       const response = await fetch("http://127.0.0.1:5050/tasks/me/completed", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -54,16 +53,27 @@ const CompletedTasks = () => {
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
   const currentTasks = completedTasks.slice(indexOfFirstTask, indexOfLastTask);
 
+  // Format date to a more readable format
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="completed-container">
-      <h2>Your Completed Tasks ✅</h2>
+      <h2>Your Completed Tasks</h2>
+
       {loading ? (
-        <p>Loading...</p>
+        <div className="loading">
+          <p>Loading your accomplishments...</p>
+        </div>
       ) : completedTasks.length === 0 ? (
-        <p>No completed tasks yet.</p>
+        <div className="empty-state">
+          <p>You haven't completed any tasks yet.</p>
+        </div>
       ) : (
         <>
           <ul className="completed-list">
@@ -72,26 +82,34 @@ const CompletedTasks = () => {
                 <h3>{task.title}</h3>
                 <p>{task.description}</p>
                 <p className="completed-date">
-                  Project: {task.project.name || "N/A"}
+                  <span>Project: </span>
+                  <strong>{task.project.name || "N/A"}</strong>
+                  {task.due_date && (
+                    <span style={{ marginLeft: "auto" }}>
+                      Completed: {formatDate(task.due_date)}
+                    </span>
+                  )}
                 </p>
               </li>
             ))}
           </ul>
 
-          <div className="pagination">
-            {Array.from(
-              { length: Math.ceil(completedTasks.length / tasksPerPage) },
-              (_, index) => (
-                <button
-                  key={index + 1}
-                  onClick={() => paginate(index + 1)}
-                  className={index + 1 === currentPage ? "active" : ""}
-                >
-                  {index + 1}
-                </button>
-              )
-            )}
-          </div>
+          {completedTasks.length > tasksPerPage && (
+            <div className="pagination">
+              {Array.from(
+                { length: Math.ceil(completedTasks.length / tasksPerPage) },
+                (_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => paginate(index + 1)}
+                    className={index + 1 === currentPage ? "active" : ""}
+                  >
+                    {index + 1}
+                  </button>
+                )
+              )}
+            </div>
+          )}
         </>
       )}
     </div>

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router"; // Fixed the import
-import { FiSettings } from "react-icons/fi";
+import { Link, useNavigate, useLocation } from "react-router"; // Added useLocation
+import { FiSettings, FiLogOut } from "react-icons/fi"; // Added FiLogOut icon
 import Cookies from "js-cookie";
 import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Hook to get current location
   const [isManager, setIsManager] = useState(false);
 
   useEffect(() => {
@@ -13,6 +14,11 @@ const Navbar = () => {
     const userRole = Cookies.get("role");
     setIsManager(userRole === "manager");
   }, []);
+
+  // Helper function to check if a link is active
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
 
   const handleLogout = () => {
     // Clear auth stuff (e.g., token)
@@ -30,28 +36,48 @@ const Navbar = () => {
         </Link>
       </div>
       <ul className="nav-links">
-        <li></li>
         <li>
-          <Link to="/dashboard">Home</Link>
+          <Link
+            to="/dashboard"
+            className={isActive("/dashboard") ? "active" : ""}
+          >
+            Home
+          </Link>
         </li>
         <li>
-          <Link to="/tasks">Task Board</Link>
+          <Link to="/tasks" className={isActive("/tasks") ? "active" : ""}>
+            Task Board
+          </Link>
         </li>
         <li>
-          <Link to="/completed-tasks">Completed Tasks</Link>
+          <Link
+            to="/completed-tasks"
+            className={isActive("/completed-tasks") ? "active" : ""}
+          >
+            Completed Tasks
+          </Link>
         </li>
         {isManager && (
           <li>
-            <Link to="/management-board">Management Board</Link>
+            <Link
+              to="/management-board"
+              className={isActive("/management-board") ? "active" : ""}
+            >
+              Management Board
+            </Link>
           </li>
         )}
       </ul>
       <div className="nav-actions">
-        <Link to="/settings" className="settings-link">
+        <Link
+          to="/settings"
+          className={`settings-link ${isActive("/settings") ? "active" : ""}`}
+        >
           <FiSettings size={20} style={{ marginRight: "5px" }} />
           Settings
         </Link>
         <button onClick={handleLogout} className="logout-button">
+          <FiLogOut size={16} style={{ marginRight: "5px" }} />
           Logout
         </button>
       </div>
