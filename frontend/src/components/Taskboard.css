@@ -84,11 +84,12 @@
 }
 
 .task-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 20px;
   list-style: none;
   padding: 0;
+  width: 100%;
 }
 
 /* Task card with hover effect */
@@ -100,7 +101,7 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   cursor: pointer;
@@ -245,7 +246,7 @@
   }
 
   .task-list {
-    grid-template-columns: 1fr;
+    gap: 15px;
   }
 
   .project-title {

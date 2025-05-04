@@ -154,11 +154,9 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <div className="welcome-banner">
         <h1>
-          {getGreeting()}, {username || "there"}!
+          {getGreeting()}, {username || "user"}!
         </h1>
-        <p>
-          Welcome to your personal dashboard. Here's what's happening today.
-        </p>
+        <p>Here's what's happening today.</p>
         <div className="user-stats">
           <div className="stat-item">
             <span className="stat-number">{announcements.length}</span>
@@ -227,7 +225,7 @@ const Dashboard = () => {
         <Link to="/settings" className="card-link">
           <div className="card">
             <h3>Settings</h3>
-            <p>Manage your profile and preferences.</p>
+            <p>Manage your profile.</p>
           </div>
         </Link>
       </div>

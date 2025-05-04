@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from bson import ObjectId
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from app.models import convert_objectid_to_str, create_project, get_db, get_project, get_user_by_id, get_projects_by_manager_id, add_user_to_project
+from app.models import convert_objectid_to_str, create_project, get_db, get_project, get_user_by_id, get_projects_by_manager_id, get_user_by_username
 
 project_bp = Blueprint('project', __name__)
 
@@ -89,11 +89,56 @@ def delete_project(project_id):
 @project_bp.route('/add-user/<project_id>', methods=['POST'])
 @jwt_required()
 def add_user_to_project_route(project_id):
-    data = request.get_json()
-    username = data["username"]
-    add_user_to_project(username, project_id)
-
-    return jsonify({"message" : "Added " + username})
+    try:
+        if not request.is_json:
+            return jsonify({"error": "Missing JSON in request"}), 400
+            
+        data = request.get_json()
+        
+        if "username" not in data:
+            return jsonify({"error": "Username is required"}), 400
+            
+        username = data["username"]
+        db = get_db()
+        
+        user = get_user_by_username(username)
+        
+        # Check if user exists
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+            
+        user_id = user['_id']
+        
+        if isinstance(project_id, str):
+            project_id = ObjectId(project_id)
+        if isinstance(user_id, str):
+            user_id = ObjectId(user_id)
+        
+        project = db.projects.find_one({"_id": project_id})
+        if not project:
+            return jsonify({"error": "Project not found"}), 404
+            
+        # Check if user is already a member
+        if user_id in project.get('member_ids', []):
+            return jsonify({"error": "User is already a member of this project"}), 409
+        
+        result = db.projects.update_one(
+            {"_id": project_id},
+            {
+                "$addToSet": {"member_ids": user_id},
+                "$set": {"updated_at": datetime.now(timezone.utc)}
+            }
+        )
+        
+        if result.modified_count > 0:
+            return jsonify({"message": f"Added {username} to project successfully"}), 200
+        else:
+            return jsonify({"error": "Failed to add user to project"}), 400
+                
+    except Exception as e:
+        # Log the exception for debugging
+        print(f"Error adding user to project: {str(e)}")
+        return jsonify({"error": "An unexpected error occurred"}), 500
 
 @project_bp.route('/user/<project_id>', methods=['DELETE'])
 @jwt_required()

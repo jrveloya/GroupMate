@@ -1,5 +1,5 @@
 import "./App.css";
-import Home from "./components/Home";
+import Auth from "./components/Auth";
 import TaskBoard from "./components/TaskBoard";
 import Navbar from "./components/Navbar";
 import Register from "./components/Register";
@@ -14,14 +14,12 @@ import {
   Routes,
   Route,
   useLocation,
+  Navigate,
 } from "react-router";
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const hideNavbar =
-    location.pathname === "/" ||
-    location.pathname === "/login" ||
-    location.pathname === "/register";
+  const hideNavbar = location.pathname === "/" || location.pathname === "/auth";
 
   return (
     <>
@@ -36,7 +34,8 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to="/auth" replace />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/tasks" element={<TaskBoard />} />
           <Route path="/completed-tasks" element={<CompletedTasks />} />
           <Route path="/dashboard" element={<Dashboard />} />

@@ -24,10 +24,12 @@ const AddAnnouncementModal = ({ isOpen, onClose, onAddAnnouncement }) => {
   return isOpen ? (
     <div className="modal-overlay">
       <div className="modal-content">
-        <button className="close-btn" onClick={onClose}>
-          X
-        </button>
-        <h2>Create New Announcement</h2>
+        <div className="modal-header-container">
+          <h2>Create New Announcement</h2>
+          <button className="close-btn" onClick={onClose}>
+            ✕
+          </button>
+        </div>
         <form className="announcement-form" onSubmit={handleAddAnnouncement}>
           <input
             type="text"
