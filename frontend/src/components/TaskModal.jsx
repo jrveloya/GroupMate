@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 import "./TaskModal.css";
 
 const TaskModal = ({ task, onClose, onComplete, onComment }) => {
@@ -41,8 +42,46 @@ const TaskModal = ({ task, onClose, onComplete, onComment }) => {
 
   const handleCommentSubmit = () => {
     if (comment.trim()) {
-      onComment(comment); // Pass the comment and commenter name to the parent component
-      setComment("");
+      // Get the current user's ID from cookies
+      const userId = Cookies.get("user_id");
+
+      let currentUserName = "You";
+
+      if (userId) {
+        // Get the token from localStorage
+        const token = localStorage.getItem("access_token");
+
+        fetch(`http://127.0.0.1:5050/users/${userId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to fetch user data");
+            }
+            return response.json();
+          })
+          .then((userData) => {
+            // Get the username from the user data
+            currentUserName = userData.username || "You";
+
+            // Now submit the comment with the retrieved username
+            onComment(comment, currentUserName);
+            setComment("");
+          })
+          .catch((err) => {
+            console.error("Error fetching user data:", err);
+            // Fall back to anonymous if there's an error
+            onComment(comment, "You");
+            setComment("");
+          });
+      } else {
+        // If no user ID is found, submit as you
+        onComment(comment, currentUserName);
+        setComment("");
+      }
     }
   };
 

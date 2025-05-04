@@ -4,85 +4,42 @@ import "./CompletedTasks.css";
 const CompletedTasks = () => {
   const [completedTasks, setCompletedTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1); // Track current page
-  const tasksPerPage = 5; // Show 5 tasks per page
+  const [currentPage, setCurrentPage] = useState(1);
+  const tasksPerPage = 5;
 
   const fetchCompletedTasks = async () => {
     try {
       setLoading(true);
-      //Change this to use backend data
-      const sampleCompletedTasks = [
-        {
-          id: 1,
-          title: "Finish Dashboard Design",
-          description: "Finalized the dashboard design and layout.",
-          completed_date: "2025-04-15",
-        },
-        {
-          id: 2,
-          title: "API Integration",
-          description:
-            "Completed the integration of the frontend and backend APIs.",
-          completed_date: "2025-04-20",
-        },
-        {
-          id: 3,
-          title: "User Authentication",
-          description: "Set up the authentication system for the application.",
-          completed_date: "2025-04-22",
-        },
-        {
-          id: 4,
-          title: "Backend Setup",
-          description:
-            "Configured the initial backend environment and database.",
-          completed_date: "2025-04-10",
-        },
-        {
-          id: 5,
-          title: "Fix UI Bugs",
-          description: "Fixed some UI bugs and improved responsiveness.",
-          completed_date: "2025-04-12",
-        },
-        {
-          id: 6,
-          title: "Database Optimization",
-          description: "Optimized database queries for better performance.",
-          completed_date: "2025-04-18",
-        },
-        {
-          id: 7,
-          title: "Mobile App Deployment",
-          description: "Deployed the mobile app to production.",
-          completed_date: "2025-04-25",
-        },
-        {
-          id: 8,
-          title: "SEO Optimization",
-          description: "Improved SEO on the website for better ranking.",
-          completed_date: "2025-04-23",
-        },
-        // {
-        //   id: 9,
-        //   title: "Bug Fixing",
-        //   description: "Fixed minor bugs in the application.",
-        //   completed_date: "2025-04-28",
-        // },
-        // {
-        //   id: 10,
-        //   title: "Code Refactoring",
-        //   description:
-        //     "Refactored the backend code for better maintainability.",
-        //   completed_date: "2025-04-30",
-        // },
-      ];
 
-      setTimeout(() => {
-        setCompletedTasks(sampleCompletedTasks);
-        setLoading(false);
-      }, 500);
+      const token = localStorage.getItem("access_token");
+
+      // Updated URL to match the backend endpoint
+      const response = await fetch("http://127.0.0.1:5050/tasks/me/completed", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
+
+      const data = await response.json();
+
+      // Transform backend task format to match the frontend format
+      const transformedTasks = data.map((task) => ({
+        id: task._id,
+        title: task.title,
+        description: task.description,
+        due_date: task.updated_at,
+        project: { id: task.project_id, name: `${task.project}` },
+      }));
+
+      setCompletedTasks(transformedTasks);
+      setLoading(false);
     } catch (err) {
-      console.error("Error fetching completed tasks:", err);
+      console.error("Error fetching tasks:", err);
       setLoading(false);
     }
   };
@@ -96,16 +53,27 @@ const CompletedTasks = () => {
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
   const currentTasks = completedTasks.slice(indexOfFirstTask, indexOfLastTask);
 
+  // Format date to a more readable format
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="completed-container">
-      <h2>Your Completed Tasks ✅</h2>
+      <h2>Your Completed Tasks</h2>
+
       {loading ? (
-        <p>Loading...</p>
+        <div className="loading">
+          <p>Loading your accomplishments...</p>
+        </div>
       ) : completedTasks.length === 0 ? (
-        <p>No completed tasks yet.</p>
+        <div className="empty-state">
+          <p>You haven't completed any tasks yet.</p>
+        </div>
       ) : (
         <>
           <ul className="completed-list">
@@ -114,26 +82,34 @@ const CompletedTasks = () => {
                 <h3>{task.title}</h3>
                 <p>{task.description}</p>
                 <p className="completed-date">
-                  Completed on: {task.completed_date || "N/A"}
+                  <span>Project: </span>
+                  <strong>{task.project.name || "N/A"}</strong>
+                  {task.due_date && (
+                    <span style={{ marginLeft: "auto" }}>
+                      Completed: {formatDate(task.due_date)}
+                    </span>
+                  )}
                 </p>
               </li>
             ))}
           </ul>
 
-          <div className="pagination">
-            {Array.from(
-              { length: Math.ceil(completedTasks.length / tasksPerPage) },
-              (_, index) => (
-                <button
-                  key={index + 1}
-                  onClick={() => paginate(index + 1)}
-                  className={index + 1 === currentPage ? "active" : ""}
-                >
-                  {index + 1}
-                </button>
-              )
-            )}
-          </div>
+          {completedTasks.length > tasksPerPage && (
+            <div className="pagination">
+              {Array.from(
+                { length: Math.ceil(completedTasks.length / tasksPerPage) },
+                (_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => paginate(index + 1)}
+                    className={index + 1 === currentPage ? "active" : ""}
+                  >
+                    {index + 1}
+                  </button>
+                )
+              )}
+            </div>
+          )}
         </>
       )}
     </div>

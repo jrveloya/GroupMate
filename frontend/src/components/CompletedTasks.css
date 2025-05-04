@@ -1,5 +1,30 @@
 .completed-container {
-  padding: 20px;
+  padding: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.completed-container h2 {
+  color: #2d3748;
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  font-weight: 700;
+  text-align: center;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+/* Underline for visibility */
+.completed-container h2::after {
+  content: "";
+  position: absolute;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(to right, #6366f1, #4c51bf);
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 3px;
 }
 
 .completed-list {
@@ -8,51 +33,126 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 18px;
+  margin-top: 25px;
+  margin-bottom: 30px;
 }
 
 .completed-card {
   background-color: #ffffff;
-  padding: 15px; /* Reduced padding for smaller tasks */
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 60%; /* Reduced width to make tasks smaller */
-  border: 1px solid #f0f0f0;
-  outline-offset: 4px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  width: 70%;
+  border-left: 4px solid #4caf50;
   transition: all 0.3s ease-in-out;
-  font-size: 0.9rem;
+  position: relative;
 }
 
 .completed-card:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  border-color: #ddd;
-  outline-color: #0056b3;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.completed-card h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding-right: 30px;
+}
+
+.completed-card p {
+  margin: 8px 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.completed-card::before {
+  content: "✓";
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #4caf50;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .completed-date {
-  font-size: 0.8rem; /* Smaller font size for the completed date */
+  font-size: 0.85rem;
   color: #777;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 10px;
+  margin-top: 15px !important;
+  display: flex;
+  align-items: center;
 }
 
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 30px auto;
+  max-width: 500px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  margin-bottom: 0;
+}
+
+.loading {
+  text-align: center;
+  padding: 30px;
+  color: #666;
+}
+
+/* Pagination styling */
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 8px;
+  margin-top: 30px;
 }
 
 .pagination button {
-  padding: 5px 10px;
-  border: 1px solid #ccc;
+  padding: 8px 14px;
+  border: 1px solid #e0e0e0;
   background-color: #fff;
+  color: #555;
   cursor: pointer;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .pagination button.active {
-  background-color: #007bff;
+  background-color: #3498db;
   color: #fff;
+  border-color: #3498db;
+  box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
 }
 
-.pagination button:hover {
-  background-color: #f1f1f1;
+.pagination button:hover:not(.active) {
+  background-color: #f5f5f5;
+  border-color: #ccc;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .completed-card {
+    width: 90%;
+  }
+
+  .completed-container {
+    padding: 20px 15px;
+  }
+
+  .pagination button {
+    padding: 6px 10px;
+  }
 }

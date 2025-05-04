@@ -1,7 +1,7 @@
 from bson import ObjectId
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from app.models import convert_objectid_to_str, create_task_comment, get_task, update_comment
+from app.models import convert_objectid_to_str, create_task_comment, get_task, update_comment, get_user_by_id
 
 comments_bp = Blueprint('comments', __name__)
 
@@ -10,8 +10,10 @@ comments_bp = Blueprint('comments', __name__)
 def create_comment():
     data = request.get_json()
     user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
     create_task_comment(
         task_id = data['task_id'],
+        username = user['username'],
         user_id= user_id,
         content = data['content'])
     return jsonify({'message':'Comment Added'}), 201

@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from bson import ObjectId
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from app.models import convert_objectid_to_str, create_project, get_db, get_project, get_user_by_id
+from app.models import convert_objectid_to_str, create_project, get_db, get_project, get_user_by_id, get_projects_by_manager_id, add_user_to_project
 
 project_bp = Blueprint('project', __name__)
 
@@ -36,7 +36,23 @@ def get_project_route(project_id):
         return jsonify({
             "error": "Project not found."
         }), 404
+    project["members"] = []
+    for member in project["member_ids"]:
+        name = get_user_by_id(member)["username"]
+        project["members"].append({"member_id": str(member), "username": name}) #Attach the usernames to each member
+    print(project)
+    project = convert_objectid_to_str(project)
+    return jsonify(project)
 
+@project_bp.route('/manager/<manager_id>', methods=['GET'])
+@jwt_required()
+def get_project_by_manger_route(manager_id):
+    print("hit")
+    project = get_projects_by_manager_id(manager_id)
+    if not project:
+        return jsonify({
+            "error": "Project not found."
+        }), 404
     project = convert_objectid_to_str(project)
     return jsonify(project)
 
@@ -71,3 +87,13 @@ def delete_project(project_id):
     db = get_db()
     db.projects.delete_one({"_id" : ObjectId(project_id)})
     return jsonify({"message" : "Project Deleted"})
+
+
+@project_bp.route('/add-user/<project_id>', methods=['POST'])
+@jwt_required()
+def add_user_to_project_route(project_id):
+    data = request.get_json()
+    username = data["username"]
+    add_user_to_project(username, project_id)
+
+    return jsonify({"message" : "Added " + username})

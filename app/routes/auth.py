@@ -35,6 +35,7 @@ def signup():
 
     return jsonify({
         "message": "User created successfully",
+        "role": role, #To be used as a cookie
         "user_id": str(user_id)
     }), 201
 
@@ -61,8 +62,10 @@ def login():
 
     # If password matches, create a JWT
     access_token = create_access_token(identity=str(user['_id']))
-
+    role = user['role']
     return jsonify({
         "access_token": access_token,
+        "user_id": str(user["_id"]), # To be used as a cookie
+        "role": role, #Also to be used as a cookie
         "message": "Login successful"
     }), 200

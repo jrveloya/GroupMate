@@ -4,127 +4,277 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+  padding: 20px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-content {
   background-color: white;
-  padding: 35px;
-  border-radius: 10px;
-  width: 700px;
+  padding: 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 700px;
   position: relative;
-  overflow: hidden; /* Prevent horizontal scrolling */
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-out;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .close-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   background-color: transparent;
   border: none;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
+  color: #777;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  border-radius: 50%;
 }
 
-h3 {
-  margin: 0;
-  font-size: 1.5rem;
+.close-btn:hover {
+  background-color: #f1f1f1;
   color: #333;
 }
 
-p {
-  margin: 5px 0;
+.modal-content h3 {
+  margin: 0 0 15px 0;
+  font-size: 1.6rem;
+  color: #2d3748;
+  padding-right: 30px;
+  font-weight: 600;
 }
 
-strong {
-  font-weight: bold;
+.modal-content > p {
+  margin: 5px 0 20px;
+  color: #4a5568;
+  line-height: 1.6;
+  font-size: 1.05rem;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #edf2f7;
 }
 
 .actions {
-  margin-top: 20px;
-  text-align: center;
+  margin: 25px 0;
+  display: flex;
+  justify-content: center;
 }
 
 .complete-btn {
-  background-color: #4caf50;
+  background: linear-gradient(to right, #48bb78, #38a169);
   color: white;
-  padding: 10px 15px;
+  padding: 12px 25px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(72, 187, 120, 0.2);
+  letter-spacing: 0.3px;
 }
 
 .complete-btn:hover {
-  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(72, 187, 120, 0.25);
+  background: linear-gradient(to right, #38a169, #2f855a);
+}
+
+.complete-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(72, 187, 120, 0.2);
 }
 
 .comment-section {
   margin-top: 20px;
-  padding-top: 10px;
-  border-top: 1px solid #ddd;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.comment-section h4 {
+  font-size: 1.2rem;
+  margin: 0 0 15px 0;
+  color: #2d3748;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.comment-section h4::before {
+  content: "💬";
+  margin-right: 8px;
+  font-size: 1.1rem;
 }
 
 .comment-list-container {
-  max-height: 250px; /* Limit height of comments list */
-  overflow-y: auto; /* Allow scrolling in the comment list only */
+  flex: 1;
+  overflow-y: auto;
   margin-bottom: 20px;
-}
-
-h4 {
-  font-size: 1.25rem;
-  margin-bottom: 10px;
-  color: #333;
+  border-radius: 10px;
+  border: 1px solid #edf2f7;
+  padding: 5px;
+  background-color: #f8fafc;
+  max-height: 250px;
 }
 
 .comment-list {
   list-style-type: none;
-  padding: 0;
+  padding: 8px;
+  margin: 0;
 }
 
 .comment-item {
-  background-color: #f9f9f9;
+  background-color: white;
   margin-bottom: 10px;
-  padding: 10px;
+  padding: 12px 15px;
   border-left: 4px solid transparent;
-  border-radius: 5px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+}
+
+.comment-item:hover {
+  transform: translateX(2px);
 }
 
 .comment-item strong {
   color: inherit;
+  margin-right: 5px;
+}
+
+.comment-item:last-child {
+  margin-bottom: 0;
 }
 
 .comment-inputs {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
-.comment-inputs input,
 .comment-inputs textarea {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 12px 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  margin-bottom: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.comment-inputs textarea {
-  height: 100px;
+.comment-inputs textarea:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
 }
 
 .comment-inputs button {
-  background-color: #007bff;
+  background: linear-gradient(to right, #4299e1, #3182ce);
   color: white;
-  padding: 10px 15px;
+  padding: 12px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: block;
+  margin-left: auto;
+  box-shadow: 0 4px 6px rgba(66, 153, 225, 0.2);
 }
 
 .comment-inputs button:hover {
-  background-color: #0056b3;
+  background: linear-gradient(to right, #3182ce, #2b6cb0);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(66, 153, 225, 0.25);
+}
+
+.comment-inputs button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(66, 153, 225, 0.2);
+}
+
+/* Empty state styling */
+.comment-section > p {
+  text-align: center;
+  padding: 20px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  color: #718096;
+  font-style: italic;
+  border: 1px dashed #e2e8f0;
+}
+
+/* Scrollbar styling */
+.comment-list-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.comment-list-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.comment-list-container::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 10px;
+}
+
+.comment-list-container::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 20px;
+    max-width: 95%;
+  }
+
+  .comment-item {
+    padding: 10px;
+  }
+
+  .complete-btn,
+  .comment-inputs button {
+    padding: 10px 15px;
+  }
 }

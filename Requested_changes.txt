@@ -1,0 +1,6 @@
+Features needed from backend
+- Get all tasks by user id
+- Add 200 codes for each endpoint to verify it worked correctly
+- Possibly add teams
+    - Makes it so that managers can only assign tasks to teams 
+    - Could also have a page where it lists all of your team members and their roles

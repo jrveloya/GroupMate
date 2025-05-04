@@ -1,0 +1,7 @@
+Completed
+Task Board Basically done (functionally)
+Login and Register basically done (functionally)
+Completed tasks page
+
+To do
+Updates and deletes for tasks, projects, users, announcements, and comments

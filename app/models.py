@@ -46,6 +46,13 @@ def get_user_by_id(user_id):
         '_id' : ObjectId(user_id)
     })
 
+#Since usernames are unique this is guranteed to work
+def get_user_by_username(username):
+    db = get_db()
+    return db.users.find_one({
+        'username': username
+    })
+
 def get_all_users():
     db = get_db()
     return list(db.users.find())
@@ -94,6 +101,50 @@ def get_project(project_id):
         "_id" : ObjectId(project_id)
     })
 
+"""
+Retrieves the project
+@param
+    project_id : ID of the project to be retrieved.
+    manager_id: ID of the manager managing the project
+"""
+def get_projects_by_manager_id(manager_id):
+    db = get_db()
+    projects = list(db.projects.find({
+        "manager_id": ObjectId(manager_id)
+    }))
+    return projects
+
+"""
+Adds a user to a project
+This only to be used by managers role users.
+@param
+    username : name of the user to add
+    project_id : ID of the manager user that created the project 
+"""
+def add_user_to_project(username, project_id):
+    db = get_db()
+    user_id = get_user_by_username(username)['_id']
+  
+    if isinstance(project_id, str):
+            project_id = ObjectId(project_id)
+    if isinstance(user_id, str):
+        user_id = ObjectId(user_id)
+
+    project = db.projects.find_one({"_id": project_id})
+    if not project:
+        return False, "Project not found"
+    
+    if user_id in project.get('member_ids', []):
+        return False, "User is already a member"
+
+
+    result = db.projects.update_one(
+        {"_id": project_id},
+        {
+            "$addToSet": {"member_ids": user_id},  
+            "$set": {"updated_at": datetime.now(timezone.utc)}
+        }
+    )
 
 # ---------- TASK CRUD METHODS ----------
 
@@ -106,7 +157,7 @@ This creates a task
     asignee_id : the ID of the asignee the task is tied to
 """
 
-def create_task(title, description, project_id, assignee_id=None):
+def create_task(title, description, project_id, assignee_id=None, assigned_to_id=None):
     db = get_db()
     task = {
         'title' : title,
@@ -114,6 +165,7 @@ def create_task(title, description, project_id, assignee_id=None):
         'status' : 'active',
         'project_id' : ObjectId(project_id),
         'assignee_id' : ObjectId(assignee_id) if assignee_id else None,
+        'assigned_to' : ObjectId(assigned_to_id) if assigned_to_id else None,
         'comments' : [],
         'created_at' : datetime.now(timezone.utc),
         'updated_at' : datetime.now(timezone.utc)
@@ -138,6 +190,42 @@ This returns a list of all the tasks assigned to the project.
 def get_all_tasks():
     db = get_db()
     tasks = list(db.tasks.find())
+    tasks = convert_objectid_to_str(tasks)
+    return tasks
+
+"""
+This returns a list of all the tasks assigned to the user.
+"""
+def get_all_active_tasks_by_user(user_id):
+    db = get_db()
+    tasks = list(db.tasks.find({
+        "assigned_to": ObjectId(user_id),
+        "status": "active"
+    }))
+    tasks = convert_objectid_to_str(tasks)
+    return tasks
+
+"""
+This returns a list of all the tasks assigned to the user.
+"""
+def get_all_completed_tasks_by_user(user_id):
+    db = get_db()
+    tasks = list(db.tasks.find({
+        "assigned_to": ObjectId(user_id),
+        "status": "complete"
+    }))
+    tasks = convert_objectid_to_str(tasks)
+    return tasks
+
+"""
+This returns a list of all the tasks assigned to the project.
+"""
+def get_all_active_tasks_by_project(project_id):
+    db = get_db()
+    tasks = list(db.tasks.find({
+        "project_id": ObjectId(project_id),
+        "status": "active"
+    }))
     tasks = convert_objectid_to_str(tasks)
     return tasks
 
@@ -169,10 +257,11 @@ def get_task_list_through_asignee_id(asignee_id):
 
 # ----------COMMENT ----------
 
-def create_task_comment(content, user_id, task_id):
+def create_task_comment(content, user_id, task_id, username):
     db = get_db()
     task_comment = {
         "user_id" : ObjectId(user_id),
+        "username" : username,
         "content" : content,
         "task_id" : ObjectId(task_id),
         "created_at" : datetime.now(timezone.utc),

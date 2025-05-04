@@ -103,3 +103,79 @@
 .modal-content button {
   margin-top: 50px;
 }
+
+/* View Members Button */
+.view-members-btn {
+  padding: 8px 16px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.view-members-btn:hover {
+  background-color: #1976d2;
+}
+
+/* Members Modal */
+.members-modal {
+  width: 400px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.members-list {
+  margin-top: 20px;
+}
+
+.member-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.member-username {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.member-id {
+  font-size: 12px;
+  color: #666;
+}
+
+.no-members {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+/* Optional: Add a header with member count */
+.members-modal h2 {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+/* Add to your ProjectDetailPage.css */
+.announcement-form input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}

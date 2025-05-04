@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import Cookies from "js-cookie";
 import "./Login.css";
 
 const Login = () => {
@@ -19,7 +20,7 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { username, password } = formData;
@@ -29,13 +30,43 @@ const Login = () => {
       return;
     }
 
-    // Placeholder for real login logic (e.g. POST to Flask backend)
+    try {
+      const response = await fetch("http://127.0.0.1:5050/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    console.log("Logging in with:", formData);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Login success:", data);
 
-    // IF successful then redirect to dashboard
-    navigate("/dashboard");
-    setError("");
+        // If backend returns a JWT token:
+        if (data.access_token) {
+          // Optionally save the token to localStorage
+          localStorage.setItem("access_token", data.access_token);
+        }
+
+        if (data.user_id) {
+          Cookies.set("user_id", data.user_id, { expires: 7 }); // 7 days
+        }
+        if (data.role) {
+          Cookies.set("role", data.role, { expires: 7 });
+        }
+
+        setError("");
+        navigate("/dashboard");
+        console.log(data.access_token);
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || "Login failed");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      setError("An error occurred. Please try again.");
+    }
   };
 
   const goBack = () => {
