@@ -2,212 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import "./ProjectDetailPage.css";
 
-// Modal component for displaying project members and adding new members
-const MembersModal = ({ isOpen, onClose, members, onAddUser }) => {
-  const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  if (!isOpen) return null;
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
-    try {
-      const response = await onAddUser(username);
-      setMessage(response.message);
-      setUsername(""); // Clear input on success
-    } catch (error) {
-      setMessage(`Error: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="modal-overlay">
-      <div className="modal-content members-modal">
-        <button className="close-btn" onClick={onClose}>
-          X
-        </button>
-        <h2>Project Members</h2>
-
-        {/* Add Member Form */}
-        <form onSubmit={handleSubmit} className="add-member-form">
-          <div className="form-row">
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter username to add"
-              required
-              disabled={loading}
-            />
-            <button
-              type="submit"
-              className="add-member-btn"
-              disabled={loading || !username.trim()}
-            >
-              {loading ? "Adding..." : "Add Member"}
-            </button>
-          </div>
-        </form>
-
-        {message && (
-          <p
-            className={`form-message ${
-              message.toLowerCase().includes("error") ? "error" : "success"
-            }`}
-          >
-            {message}
-          </p>
-        )}
-
-        <div className="members-list">
-          {members && members.length > 0 ? (
-            members.map((member, index) => (
-              <div key={member.member_id || index} className="member-item">
-                <div className="member-info">
-                  <span className="member-username">{member.username}</span>
-                  <span className="member-id">ID: {member.member_id}</span>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="no-members">No members in this project</p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Modal component for adding new tasks
-// Updated AddTaskModal that uses project members
-const AddTaskModal = ({ isOpen, onClose, onAddTask, members }) => {
-  const [taskTitle, setTaskTitle] = useState("");
-  const [taskDescription, setTaskDescription] = useState("");
-  const [assignedTo, setAssignedTo] = useState("");
-
-  const handleAddTask = (e) => {
-    e.preventDefault();
-    if (taskTitle.trim() && taskDescription.trim() && assignedTo) {
-      const newTask = {
-        title: taskTitle,
-        description: taskDescription,
-        assigned_to: assignedTo, // Store user ID
-        id: Date.now(), // Change this later
-      };
-      onAddTask(newTask);
-      setTaskTitle(""); // Clear input field
-      setTaskDescription(""); // Clear input field
-      setAssignedTo(""); // Clear assigned member
-      onClose(); // Close the modal
-    }
-  };
-
-  return isOpen ? (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <button className="close-btn" onClick={onClose}>
-          X
-        </button>
-        <h2>Add New Task</h2>
-        <form className="task-form" onSubmit={handleAddTask}>
-          <input
-            type="text"
-            value={taskTitle}
-            onChange={(e) => setTaskTitle(e.target.value)}
-            placeholder="Enter task title"
-            required
-          />
-          <textarea
-            className="task-description"
-            value={taskDescription}
-            onChange={(e) => setTaskDescription(e.target.value)}
-            placeholder="Enter task description"
-            rows="4"
-            required
-          />
-          <label htmlFor="assignedTo">Assign to:</label>
-          <select
-            className="assign-select"
-            id="assignedTo"
-            value={assignedTo}
-            onChange={(e) => setAssignedTo(e.target.value)}
-            required
-          >
-            <option value="" disabled>
-              Select team member
-            </option>
-            {members &&
-              members.map((member) => (
-                <option key={member.member_id} value={member.member_id}>
-                  {member.username}
-                </option>
-              ))}
-          </select>
-          <button className="add--task-btn" type="submit">
-            Add Task
-          </button>
-        </form>
-      </div>
-    </div>
-  ) : null;
-};
-
-// Modal component for adding new announcements
-const AddAnnouncementModal = ({ isOpen, onClose, onAddAnnouncement }) => {
-  const [announcementTitle, setAnnouncementTitle] = useState("");
-  const [announcementContent, setAnnouncementContent] = useState("");
-
-  const handleAddAnnouncement = (e) => {
-    e.preventDefault();
-    if (announcementTitle.trim() && announcementContent.trim()) {
-      const newAnnouncement = {
-        title: announcementTitle,
-        content: announcementContent,
-        id: Date.now(),
-      };
-      onAddAnnouncement(newAnnouncement);
-      setAnnouncementTitle(""); // Clear title input field
-      setAnnouncementContent(""); // Clear content input field
-      onClose(); // Close the modal
-    }
-  };
-
-  return isOpen ? (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <button className="close-btn" onClick={onClose}>
-          X
-        </button>
-        <h2>Create New Announcement</h2>
-        <form className="announcement-form" onSubmit={handleAddAnnouncement}>
-          <input
-            type="text"
-            value={announcementTitle}
-            onChange={(e) => setAnnouncementTitle(e.target.value)}
-            placeholder="Enter announcement title"
-            required
-          />
-          <textarea
-            className="announcement-description"
-            value={announcementContent}
-            onChange={(e) => setAnnouncementContent(e.target.value)}
-            placeholder="Enter announcement content"
-            rows="4"
-            required
-          />
-          <button className="add--announcement-btn" type="submit">
-            Create Announcement
-          </button>
-        </form>
-      </div>
-    </div>
-  ) : null;
-};
+// Import Modal Components from the same folder
+import AddTaskModal from "./AddTaskModal";
+import AddAnnouncementModal from "./AddAnnouncementModal";
+import MembersModal from "./MembersModal";
+import TaskViewEditModal from "./TaskViewEditModal";
+import AnnouncementViewEditModal from "./AnnouncementViewEditModal";
 
 // Project Detail Page Component
 const ProjectDetailPage = () => {
@@ -215,11 +15,21 @@ const ProjectDetailPage = () => {
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
+
+  // State for modals
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isAnnouncementModalOpen, setIsAnnouncementModalOpen] = useState(false);
   const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
+
+  // State for view/edit modals
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isTaskViewModalOpen, setIsTaskViewModalOpen] = useState(false);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+  const [isAnnouncementViewModalOpen, setIsAnnouncementViewModalOpen] =
+    useState(false);
+
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // Added missing error state
+  const [error, setError] = useState(null);
 
   const fetchProjectData = async () => {
     setLoading(true);
@@ -319,7 +129,7 @@ const ProjectDetailPage = () => {
     }
   }, [projectId]);
 
-  // You might also want to add a function to fetch tasks after creation
+  // Function to fetch tasks after creation or update
   const fetchTasksForProject = async () => {
     try {
       const token = localStorage.getItem("access_token");
@@ -346,9 +156,6 @@ const ProjectDetailPage = () => {
 
   // Add a new task
   const addTask = async (newTask) => {
-    console.log("Creating task with data:", newTask);
-    console.log("Project ID:", project._id);
-
     try {
       const token = localStorage.getItem("access_token");
 
@@ -376,11 +183,52 @@ const ProjectDetailPage = () => {
       const result = await response.json();
       console.log("Task created successfully:", result);
 
+      // Refresh tasks list
       fetchTasksForProject();
     } catch (err) {
       console.error("Error creating task:", err);
-      // Optionally show error to user
       alert(`Error creating task: ${err.message}`);
+    }
+  };
+
+  // Update an existing task
+  const updateTask = async (updatedTask) => {
+    try {
+      const token = localStorage.getItem("access_token");
+
+      const response = await fetch(
+        `http://127.0.0.1:5050/tasks/${updatedTask._id}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: updatedTask.title,
+            description: updatedTask.description,
+            assigned_to_id: updatedTask.assigned_to,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Authentication failed. Please log in again.");
+        }
+        throw new Error(`Failed to update task: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Task updated successfully:", result);
+
+      // Refresh tasks list
+      fetchTasksForProject();
+
+      return result;
+    } catch (err) {
+      console.error("Error updating task:", err);
+      throw err;
     }
   };
 
@@ -418,8 +266,47 @@ const ProjectDetailPage = () => {
       fetchAnnouncementsForProject();
     } catch (err) {
       console.error("Error creating announcement:", err);
-      // Optionally show error to user
       alert(`Error creating announcement: ${err.message}`);
+    }
+  };
+
+  // Update an existing announcement
+  const updateAnnouncement = async (updatedAnnouncement) => {
+    try {
+      const token = localStorage.getItem("access_token");
+
+      const response = await fetch(
+        `http://127.0.0.1:5050/announcement/${updatedAnnouncement._id}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: updatedAnnouncement.title,
+            content: updatedAnnouncement.content,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Authentication failed. Please log in again.");
+        }
+        throw new Error(`Failed to update announcement: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Announcement updated successfully:", result);
+
+      // Refresh announcements list
+      fetchAnnouncementsForProject();
+
+      return result;
+    } catch (err) {
+      console.error("Error updating announcement:", err);
+      throw err;
     }
   };
 
@@ -447,7 +334,7 @@ const ProjectDetailPage = () => {
     }
   };
 
-  // Your existing addUserToProject function remains the same
+  // Add user to project
   const addUserToProject = async (username) => {
     const token = localStorage.getItem("access_token");
 
@@ -477,10 +364,33 @@ const ProjectDetailPage = () => {
     const result = await response.json();
 
     // Refresh project data to get updated members list
-    // You might want to refactor this to update just the members state
     fetchProjectData();
 
     return result;
+  };
+
+  // Handle opening task view/edit modal
+  const handleTaskClick = (task) => {
+    setSelectedTask(task);
+    setIsTaskViewModalOpen(true);
+  };
+
+  // Handle opening announcement view/edit modal
+  const handleAnnouncementClick = (announcement) => {
+    setSelectedAnnouncement(announcement);
+    setIsAnnouncementViewModalOpen(true);
+  };
+
+  // Close task view/edit modal
+  const closeTaskViewModal = () => {
+    setIsTaskViewModalOpen(false);
+    setSelectedTask(null);
+  };
+
+  // Close announcement view/edit modal
+  const closeAnnouncementViewModal = () => {
+    setIsAnnouncementViewModalOpen(false);
+    setSelectedAnnouncement(null);
   };
 
   return (
@@ -519,9 +429,17 @@ const ProjectDetailPage = () => {
               <div className="task-list">
                 {tasks.length > 0 ? (
                   tasks.map((task) => (
-                    <div key={task.id} className="task-card">
+                    <div
+                      key={task._id || task.id}
+                      className="task-card clickable"
+                      onClick={() => handleTaskClick(task)}
+                    >
                       <h4>{task.title}</h4>
-                      <p>{task.description}</p>
+                      <p className="task-description-preview">
+                        {task.description && task.description.length > 100
+                          ? `${task.description.substring(0, 100)}...`
+                          : task.description}
+                      </p>
                       <p>
                         <strong>Assigned to:</strong>{" "}
                         {task.assigned_to_username}
@@ -546,9 +464,18 @@ const ProjectDetailPage = () => {
               <div className="announcement-list">
                 {announcements.length > 0 ? (
                   announcements.map((announcement) => (
-                    <div key={announcement._id} className="announcement-card">
+                    <div
+                      key={announcement._id || announcement.id}
+                      className="announcement-card clickable"
+                      onClick={() => handleAnnouncementClick(announcement)}
+                    >
                       <h4>{announcement.title}</h4>
-                      <p>{announcement.content}</p>
+                      <p className="announcement-content-preview">
+                        {announcement.content &&
+                        announcement.content.length > 100
+                          ? `${announcement.content.substring(0, 100)}...`
+                          : announcement.content}
+                      </p>
                       <p className="announcement-meta">
                         <small>
                           Posted on:{" "}
@@ -572,7 +499,7 @@ const ProjectDetailPage = () => {
             </div>
           </div>
 
-          {/* Modal for adding new task */}
+          {/* Modal Components */}
           <AddTaskModal
             isOpen={isTaskModalOpen}
             onClose={() => setIsTaskModalOpen(false)}
@@ -580,11 +507,25 @@ const ProjectDetailPage = () => {
             members={project.members}
           />
 
-          {/* Modal for adding new announcement */}
+          <TaskViewEditModal
+            isOpen={isTaskViewModalOpen}
+            onClose={closeTaskViewModal}
+            task={selectedTask}
+            members={project.members}
+            onUpdateTask={updateTask}
+          />
+
           <AddAnnouncementModal
             isOpen={isAnnouncementModalOpen}
             onClose={() => setIsAnnouncementModalOpen(false)}
             onAddAnnouncement={addAnnouncement}
+          />
+
+          <AnnouncementViewEditModal
+            isOpen={isAnnouncementViewModalOpen}
+            onClose={closeAnnouncementViewModal}
+            announcement={selectedAnnouncement}
+            onUpdateAnnouncement={updateAnnouncement}
           />
 
           <MembersModal
