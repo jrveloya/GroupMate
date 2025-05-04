@@ -1,10 +1,11 @@
+/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(3px);
   display: flex;
   justify-content: center;
@@ -27,13 +28,13 @@
   background-color: white;
   padding: 30px;
   border-radius: 12px;
-  width: 100%;
+  width: 90%;
   max-width: 700px;
+  max-height: 85vh;
+  overflow-y: auto;
   position: relative;
-  overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   animation: slideUp 0.3s ease-out;
-  max-height: 85vh;
   display: flex;
   flex-direction: column;
 }
@@ -72,73 +73,253 @@
   color: #333;
 }
 
-.modal-content h3 {
-  margin: 0 0 15px 0;
+/* Modal Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+  margin: 0;
   font-size: 1.6rem;
   color: #2d3748;
   padding-right: 30px;
   font-weight: 600;
 }
 
-.modal-content > p {
-  margin: 5px 0 20px;
-  color: #4a5568;
-  line-height: 1.6;
-  font-size: 1.05rem;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #edf2f7;
-}
-
-/* Task meta information */
-.task-meta {
+.modal-actions {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-  font-size: 0.95rem;
-  color: #718096;
+  gap: 10px;
 }
 
-.due-date-label,
-.project-name {
+/* Bottom actions */
+.bottom-actions {
+  margin-top: 30px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
   display: flex;
-  align-items: center;
+  justify-content: flex-end;
 }
 
-.due-date-icon,
-.project-icon {
-  margin-right: 6px;
+.bottom-actions .delete-btn {
+  width: auto;
+  padding: 10px 20px;
+  font-size: 1rem;
 }
 
-.actions {
-  margin: 25px 0;
+/* Delete Button and Confirmation */
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+}
+
+.delete-confirmation {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.delete-warning {
+  color: #f44336;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+.delete-actions {
   display: flex;
   justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
 }
 
-.complete-btn {
-  background: linear-gradient(to right, #48bb78, #38a169);
+.cancel-delete-btn {
+  background-color: #9e9e9e;
   color: white;
-  padding: 12px 25px;
+  padding: 10px 15px;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
+}
+
+.cancel-delete-btn:hover {
+  background-color: #757575;
+}
+
+.confirm-delete-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.confirm-delete-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Form Elements */
+input[type="text"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
   font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.2s;
-  box-shadow: 0 4px 6px rgba(72, 187, 120, 0.2);
-  letter-spacing: 0.3px;
 }
 
-.complete-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 10px rgba(72, 187, 120, 0.25);
-  background: linear-gradient(to right, #38a169, #2f855a);
+textarea {
+  resize: vertical;
+  min-height: 100px;
 }
 
-.complete-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(72, 187, 120, 0.2);
+select {
+  height: 40px;
 }
+
+/* Buttons */
+.add-task-btn,
+.add-announcement-btn,
+.add-member-btn,
+.update-task-btn,
+.update-announcement-btn,
+.edit-toggle-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.add-task-btn,
+.add-announcement-btn,
+.update-task-btn,
+.update-announcement-btn,
+.edit-toggle-btn {
+  margin-top: 10px;
+}
+
+.add-task-btn,
+.add-announcement-btn,
+.update-task-btn,
+.update-announcement-btn {
+  background-color: #6366f1;
+  width: 100%;
+}
+
+.add-task-btn:hover,
+.add-announcement-btn:hover,
+.update-task-btn:hover,
+.update-announcement-btn:hover {
+  background-color: #4f46e5;
+}
+
+.add-member-btn {
+  background-color: #2196f3;
+}
+
+.add-member-btn:hover {
+  background-color: #1976d2;
+}
+
+.edit-toggle-btn {
+  background-color: #6366f1;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+.edit-toggle-btn.cancel {
+  background-color: #888;
+}
+
+.edit-toggle-btn:hover {
+  background-color: #4f46e5;
+}
+
+.edit-toggle-btn.cancel:hover {
+  background-color: #666;
+}
+
+/* Forms */
+.task-form,
+.announcement-form,
+.add-member-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Messages */
+.form-message {
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
+  font-size: 0.9rem;
+}
+
+.form-message.success {
+  background-color: #e6f4ea;
+  color: #1e7e34;
+}
+
+.form-message.error {
+  background-color: #fdecea;
+  color: #dc3545;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+/* Task and Announcement Details */
+.task-details,
+.announcement-details {
+  padding: 10px 0;
+}
+
+.task-description-text,
+.announcement-content-text {
+  line-height: 1.6;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+.assigned-to {
+  margin-top: 15px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.announcement-meta {
+  margin-top: 15px;
+  color: #777;
+  font-size: 0.8rem;
+}
+
+/* COMMENT SECTION STYLES */
 
 .comment-section {
   margin-top: 20px;
@@ -255,7 +436,7 @@
 }
 
 /* Empty state styling */
-.comment-section > p {
+.no-comments {
   text-align: center;
   padding: 20px;
   background-color: #f8fafc;
@@ -282,23 +463,6 @@
 
 .comment-list-container::-webkit-scrollbar-thumb:hover {
   background: #a0aec0;
-}
-
-/* Responsive styles for smaller screens */
-@media (max-width: 768px) {
-  .modal-content {
-    padding: 20px;
-    max-width: 95%;
-  }
-
-  .comment-item {
-    padding: 10px;
-  }
-
-  .complete-btn,
-  .comment-inputs button {
-    padding: 10px 15px;
-  }
 }
 
 /* Comment content styling with delete icon */
@@ -332,7 +496,6 @@
 .delete-icon-btn:hover {
   background-color: #fee2e2;
   color: #e53e3e;
-  cursor: pointer;
 }
 
 /* Hide the delete button by default */

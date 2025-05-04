@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from app.models import create_user, delete_user, get_all_users, get_user_by_id, update_basic_user_information
+from app.models import create_user, delete_user, get_all_users, get_user_by_id, update_basic_user_information, get_db
 from werkzeug.security import generate_password_hash
 
 users_bp = Blueprint('users', __name__)
@@ -65,12 +65,15 @@ def delete_user_route():
 @jwt_required()
 def update_user_route():
     data = request.get_json()
+    db = get_db()
     user = get_jwt_identity()
+    if data['username']:
+        if db.users.find_one({"username": data['username']}):
+            return jsonify({"error": "Username already exists"}), 409
     updates = {
         'username' : data['username'],
-        'first_name' : data['first_name'],
-        'last_name' : data['last_name']
     }
+    
     updates = {k : v for k,v in updates.items() if v is not None}
     results = update_basic_user_information(user, updates)
     if results.matched_count == 0:

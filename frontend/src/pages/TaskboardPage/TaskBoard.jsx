@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import TaskModal from "./TaskModal";
+import TaskModal from "../../components/TaskModal";
+import Cookies from "js-cookie";
 import "./Taskboard.css";
 
 const Taskboard = () => {
@@ -36,10 +37,13 @@ const Taskboard = () => {
         title: task.title,
         description: task.description,
         due_date: task.updated_at,
+        priority: task.priority || "medium", // Add priority field with default
         project: { id: task.project_id, name: task.project },
         comments: task.comments.map((c) => ({
+          id: c._id, // Make sure to include the comment ID
           commenterName: c.username || "Unknown", // fallback if backend doesn't include name
           text: c.content || "",
+          user_id: c.user_id,
         })),
       }));
 
@@ -106,6 +110,13 @@ const Taskboard = () => {
       // Ensure commenterName is not undefined
       const safeCommenterName = commenterName || "Anonymous";
 
+      // Get the current user ID
+      const userId = Cookies.get("user_id");
+      if (!userId) {
+        console.error("No user ID found in cookies");
+        return;
+      }
+
       const response = await fetch("http://127.0.0.1:5050/comments/", {
         method: "POST",
         headers: {
@@ -122,11 +133,20 @@ const Taskboard = () => {
         throw new Error("Failed to post comment");
       }
 
-      // Create the new comment object with a safe name
+      const data = await response.json();
+      console.log("Comment response:", data);
+
+      const commentId = data.comment_id;
+
+      // Create the new comment object with ID and user_id
       const newCommentObj = {
+        id: commentId,
+        user_id: userId, // Set the current user's ID
         commenterName: safeCommenterName,
         text: newComment,
       };
+
+      console.log("Adding new comment:", newCommentObj);
 
       // Update the selectedTask state with the new comment
       setSelectedTask({
@@ -150,6 +170,54 @@ const Taskboard = () => {
     }
   };
 
+  // Add a new function to handle comment deletion
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const token = localStorage.getItem("access_token");
+
+      const response = await fetch(
+        `http://127.0.0.1:5050/comments/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete comment");
+      }
+
+      // If deletion was successful, update the UI
+      // Update the selectedTask state
+      setSelectedTask({
+        ...selectedTask,
+        comments: selectedTask.comments.filter(
+          (comment) => comment.id !== commentId
+        ),
+      });
+
+      // Update the tasks array
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === selectedTask.id
+            ? {
+                ...task,
+                comments: task.comments.filter(
+                  (comment) => comment.id !== commentId
+                ),
+              }
+            : task
+        )
+      );
+
+      console.log("Comment deleted successfully");
+    } catch (err) {
+      console.error("Error deleting comment:", err);
+    }
+  };
+
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -165,11 +233,24 @@ const Taskboard = () => {
 
   return (
     <div className="taskboard-container">
-      <h2>Your Task Board</h2>
+      <div className="taskboard-header">
+        <h2>Your Task Board</h2>
+        <p>Manage and track your assigned tasks across all projects</p>
+      </div>
+
       {loading ? (
-        <p>Loading tasks...</p>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading your tasks...</p>
+        </div>
       ) : tasks.length === 0 ? (
-        <p>No tasks assigned to you.</p>
+        <div className="empty-state">
+          <div className="empty-icon">📋</div>
+          <p>No tasks assigned to you.</p>
+          <p className="empty-subtext">
+            Enjoy your free time or check back later!
+          </p>
+        </div>
       ) : (
         Object.keys(groupedTasks).map((projectName) => (
           <div key={projectName} className="project-section">
@@ -183,6 +264,14 @@ const Taskboard = () => {
                 >
                   <h4>{task.title}</h4>
                   <p>{task.description}</p>
+                  <div className="task-footer">
+                    {task.comments.length > 0 && (
+                      <span className="comment-count">
+                        {task.comments.length} comment
+                        {task.comments.length !== 1 ? "s" : ""}
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -196,6 +285,7 @@ const Taskboard = () => {
           onClose={handleModalClose}
           onComplete={() => handleCompleteTask(selectedTask.id)}
           onComment={handleCommentSubmit}
+          onDeleteComment={handleDeleteComment}
         />
       )}
     </div>
