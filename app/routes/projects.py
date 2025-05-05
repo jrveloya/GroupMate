@@ -101,13 +101,35 @@ def update_project(project_id):
 def update_project_complete(project_id):
     db = get_db()
     data = request.get_json()
-    updates = {
-        "status" : data.get("status"),
-        "updated_at" : datetime.now(timezone.utc)
+    
+    # Update project status
+    project_updates = {
+        "status": data.get("status"),
+        "updated_at": datetime.now(timezone.utc)
     }
-    updates = {k : v for k, v in updates.items() if v is not None}
-    db.projects.update_one({"_id" : ObjectId(project_id)}, {"$set" : updates})
-    return jsonify({'message' : 'Project Updated Successfully.'})
+    project_updates = {k: v for k, v in project_updates.items() if v is not None}
+    
+    # Update the project
+    db.projects.update_one({"_id": ObjectId(project_id)}, {"$set": project_updates})
+    
+    # Update all tasks associated with this project to complete
+    task_updates = {
+        "status": "complete",
+        "updated_at": datetime.now(timezone.utc)
+    }
+    task_result = db.tasks.update_many(
+        {"project_id": ObjectId(project_id)},
+        {"$set": task_updates}
+    )
+    
+    # Delete all announcements associated with this project
+    announcement_result = db.announcements.delete_many({"project_id": ObjectId(project_id)})
+    
+    return jsonify({
+        'message': 'Project Updated Successfully.',
+        'tasks_updated': task_result.modified_count,
+        'announcements_deleted': announcement_result.deleted_count
+    })
 
 @project_bp.route('/<project_id>', methods=['DELETE'])
 @jwt_required()
