@@ -14,6 +14,7 @@ const AddProjectModal = ({ isOpen, onClose, onAddProject }) => {
       const newProject = {
         name: projectName,
         description: projectDescription,
+        status: "active", // Set status to active for new projects
         id: Date.now(), // Create unique ID for the new project ( Change this later to match backend)
       };
       onAddProject(newProject);
@@ -88,6 +89,7 @@ const DeleteConfirmationModal = ({
 
 const ManagementBoard = () => {
   const [projects, setProjects] = useState([]);
+  const [activeProjects, setActiveProjects] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -126,6 +128,7 @@ const ManagementBoard = () => {
 
         if (response.status === 404 || response.status === 422) {
           setProjects([]);
+          setActiveProjects([]);
           setNoProjects(true);
           setLoading(false);
           return;
@@ -137,7 +140,15 @@ const ManagementBoard = () => {
 
         const projectData = await response.json();
         setProjects(projectData);
-        setNoProjects(projectData.length === 0);
+
+        // Filter for active projects
+        const filteredProjects = projectData.filter(
+          (project) =>
+            project.status === "active" || project.status === undefined
+        );
+
+        setActiveProjects(filteredProjects);
+        setNoProjects(filteredProjects.length === 0);
       } catch (err) {
         console.error("Error fetching projects:", err);
         setError(err.message || "Failed to fetch projects");
@@ -159,6 +170,7 @@ const ManagementBoard = () => {
         name: newProject.name,
         description: newProject.description || "",
         manager_id: managerId,
+        status: "active", // Ensure new projects are active
       });
 
       const response = await fetch("http://127.0.0.1:5050/project/", {
@@ -171,6 +183,7 @@ const ManagementBoard = () => {
           name: newProject.name,
           description: newProject.description || "",
           manager_id: managerId,
+          status: "active", // Add status field to API request
         }),
       });
 
@@ -192,9 +205,14 @@ const ManagementBoard = () => {
       const createdProject = {
         ...newProject,
         _id: result.project_id,
+        status: "active",
       };
 
       setProjects((prevProjects) => [...prevProjects, createdProject]);
+      setActiveProjects((prevActiveProjects) => [
+        ...prevActiveProjects,
+        createdProject,
+      ]);
       setNoProjects(false);
     } catch (err) {
       console.error("Error creating project:", err);
@@ -237,13 +255,17 @@ const ManagementBoard = () => {
       const result = await response.json();
       console.log("Delete response:", result);
 
-      // Remove from state
+      // Remove from both state arrays
       setProjects((prevProjects) =>
         prevProjects.filter((p) => p._id !== projectToDelete._id)
       );
 
+      setActiveProjects((prevActiveProjects) =>
+        prevActiveProjects.filter((p) => p._id !== projectToDelete._id)
+      );
+
       // Check if we need to show the no projects message
-      if (projects.length === 1) {
+      if (activeProjects.length === 1) {
         setNoProjects(true);
       }
 
@@ -270,14 +292,14 @@ const ManagementBoard = () => {
       {error && <p className="error-message">Error: {error}</p>}
       {!loading && !error && noProjects && (
         <div className="no-projects-container">
-          <p className="no-projects-message">No projects created yet.</p>
+          <p className="no-projects-message">No active projects found.</p>
         </div>
       )}
 
-      {/* Project Cards Section */}
-      {!loading && !error && projects.length > 0 && (
+      {/* Project Cards Section - Only showing ACTIVE projects */}
+      {!loading && !error && activeProjects.length > 0 && (
         <div className="project-cards">
-          {projects.map((project) => (
+          {activeProjects.map((project) => (
             <div key={project._id || project.id} className="project-card">
               <h3>{project.name}</h3>
               <p>{project.description}</p>

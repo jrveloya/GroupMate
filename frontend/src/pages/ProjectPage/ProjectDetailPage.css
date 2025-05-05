@@ -5,16 +5,18 @@
 }
 
 .project-header {
-  text-align: center;
   margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .project-header h2 {
   color: #2d3748;
   font-size: 2.2rem;
-  margin-bottom: 30px;
+  margin-bottom: 0;
   font-weight: 700;
-  text-align: center;
+  text-align: left;
   position: relative;
   padding-bottom: 12px;
 }
@@ -27,9 +29,42 @@
   height: 3px;
   background: linear-gradient(to right, #6366f1, #4c51bf);
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   border-radius: 3px;
+}
+
+.project-header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.complete-project-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.complete-project-btn:hover {
+  background-color: #45a049;
+}
+
+.complete-project-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.project-completed-badge {
+  background-color: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: bold;
 }
 
 .project-content {
@@ -149,7 +184,6 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  margin: 10px 0;
 }
 
 .view-members-btn:hover {
@@ -253,5 +287,16 @@
   .projects {
     width: 100%;
     margin-bottom: 20px;
+  }
+
+  .project-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .project-header-buttons {
+    margin-top: 15px;
+    width: 100%;
+    justify-content: flex-start;
   }
 }

@@ -53,6 +53,24 @@ def get_project_by_manger_route(manager_id):
     project = convert_objectid_to_str(project)
     return jsonify(project)
 
+@project_bp.route('/completed/manager/<manager_id>', methods=['GET'])
+@jwt_required()
+def get_completed_projects_by_manger_route(manager_id):
+    projects = get_projects_by_manager_id(manager_id)
+    if not projects:
+        return jsonify({
+            "error": "Project not found."
+        }), 404
+    completed_projects = [project for project in projects if project.get("status") == "complete"]
+    
+    if not completed_projects:
+        return jsonify({
+            "message": "No completed projects found for this manager."
+        }), 200
+        
+    completed_projects = convert_objectid_to_str(completed_projects)
+    return jsonify(completed_projects)
+
 @project_bp.route('/', methods=['GET'])
 @jwt_required()
 def list_projects():
@@ -71,6 +89,19 @@ def update_project(project_id):
     updates = {
         "name" : data.get("name"),
         "description" : data.get("description"),
+        "status" : data.get("status"),
+        "updated_at" : datetime.now(timezone.utc)
+    }
+    updates = {k : v for k, v in updates.items() if v is not None}
+    db.projects.update_one({"_id" : ObjectId(project_id)}, {"$set" : updates})
+    return jsonify({'message' : 'Project Updated Successfully.'})
+
+@project_bp.route('/complete/<project_id>', methods=['PUT'])
+@jwt_required()
+def update_project_complete(project_id):
+    db = get_db()
+    data = request.get_json()
+    updates = {
         "status" : data.get("status"),
         "updated_at" : datetime.now(timezone.utc)
     }

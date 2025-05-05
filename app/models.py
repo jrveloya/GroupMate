@@ -114,6 +114,7 @@ def get_projects_by_manager_id(manager_id):
     }))
     return projects
 
+
 # ---------- TASK CRUD METHODS ----------
 
 """

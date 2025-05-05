@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import "./ProjectDetailPage.css";
 import Cookies from "js-cookie";
 
@@ -31,6 +31,11 @@ const ProjectDetailPage = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Add state for marking project as complete
+  const [isCompleting, setIsCompleting] = useState(false);
+
+  const navigate = useNavigate();
 
   const fetchProjectData = async () => {
     setLoading(true);
@@ -711,6 +716,62 @@ const ProjectDetailPage = () => {
     }
   };
 
+  // New function to mark project as complete
+  const markProjectAsComplete = async () => {
+    try {
+      setIsCompleting(true);
+      const token = localStorage.getItem("access_token");
+
+      const response = await fetch(
+        `http://127.0.0.1:5050/project/complete/${projectId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: "complete",
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Authentication failed. Please log in again.");
+        } else if (response.status === 403) {
+          throw new Error(
+            "You don't have permission to complete this project."
+          );
+        } else if (response.status === 404) {
+          throw new Error("Project not found.");
+        }
+        throw new Error(
+          `Failed to mark project as complete: ${response.status}`
+        );
+      }
+
+      const result = await response.json();
+      console.log("Project marked as complete:", result);
+
+      // Update the project state to show it's completed
+      setProject({
+        ...project,
+        status: "complete",
+      });
+
+      // Optionally, you could show a success message
+      alert("Project has been marked as complete!");
+      navigate("/management-board");
+      return result;
+    } catch (err) {
+      console.error("Error marking project as complete:", err);
+      alert(`Error: ${err.message}`);
+    } finally {
+      setIsCompleting(false);
+    }
+  };
+
   return (
     <div className="project-detail-page">
       {loading ? (
@@ -726,12 +787,27 @@ const ProjectDetailPage = () => {
         <>
           <div className="project-header">
             <h2>{project.name}</h2>
-            <button
-              className="view-members-btn"
-              onClick={() => setIsMembersModalOpen(true)}
-            >
-              View Members ({project.members?.length || 0})
-            </button>
+            <div className="project-header-buttons">
+              <button
+                className="view-members-btn"
+                onClick={() => setIsMembersModalOpen(true)}
+              >
+                View Members ({project.members?.length || 0})
+              </button>
+
+              {/* Add the Mark as Complete button */}
+              {project.status !== "complete" ? (
+                <button
+                  className="complete-project-btn"
+                  onClick={markProjectAsComplete}
+                  disabled={isCompleting}
+                >
+                  {isCompleting ? "Marking as Complete..." : "Mark as Complete"}
+                </button>
+              ) : (
+                <span className="project-completed-badge">Completed</span>
+              )}
+            </div>
           </div>
 
           <div className="project-content">

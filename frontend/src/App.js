@@ -7,6 +7,7 @@ import CompletedTasks from "./pages/CompletedTaskPage/CompletedTasks";
 import Settings from "./pages/SettingsPage/Settings";
 import ManagementBoard from "./pages/ManagementBoardPage/ManagementBoard";
 import ProjectDetailPage from "./pages/ProjectPage/ProjectDetailPage";
+import CompletedProjects from "./pages/CompletedProjectsPage/CompletedProjects";
 import {
   BrowserRouter as Router,
   Routes,
@@ -39,6 +40,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/management-board" element={<ManagementBoard />} />
+          <Route path="/completed-projects" element={<CompletedProjects />} />
           <Route path="/project/:projectId" element={<ProjectDetailPage />} />
         </Routes>
       </Layout>
