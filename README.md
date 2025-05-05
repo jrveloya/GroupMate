@@ -5,11 +5,7 @@ To run frontend
 - npm install
 - npm start
 
-STILL TO DO
+To run backend
 
-- frontend
-  - Login/Register logic
-  - Assign cookie to user to keep track of name and role
-  - Fetch data from backend api to populate pages ( currently only using hardcoded sample data)
-  - Create post requests to backend to create data
-  - Possibly put on amplify
+- pip install -r requirements.txt
+- python run.py
