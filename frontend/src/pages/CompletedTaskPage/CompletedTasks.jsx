@@ -51,6 +51,7 @@ const CompletedTasks = () => {
   // Get current tasks based on the current page
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
+  console.log(completedTasks);
   const currentTasks = completedTasks.slice(indexOfFirstTask, indexOfLastTask);
 
   // Format date to a more readable format
