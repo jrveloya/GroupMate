@@ -83,6 +83,7 @@ def get_all_active_tasks_by_user_route():
     tasks = get_all_active_tasks_by_user(user_id)
     #Add the project name to the response
     for task in tasks:
+        print(task["_id"])
         task['project'] = get_project(str(task['project_id']))['name']
     return jsonify(tasks), 200
 

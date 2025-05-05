@@ -81,9 +81,30 @@ def update_project(project_id):
 @project_bp.route('/<project_id>', methods=['DELETE'])
 @jwt_required()
 def delete_project(project_id):
-    db = get_db()
-    db.projects.delete_one({"_id" : ObjectId(project_id)})
-    return jsonify({"message" : "Project Deleted"})
+    try:
+        db = get_db()
+        project_obj_id = ObjectId(project_id)
+        
+        # Delete the project
+        project_result = db.projects.delete_one({"_id": project_obj_id})
+        
+        if project_result.deleted_count == 0:
+            return jsonify({"message": "Project not found"}), 404
+        
+        # Delete all tasks associated with the project
+        tasks_result = db.tasks.delete_many({"project_id": project_obj_id})
+        
+        # Delete all announcements associated with the project
+        announcements_result = db.announcements.delete_many({"project_id": project_obj_id})
+        
+        return jsonify({
+            "message": "Project deleted successfully",
+            "deleted_tasks_count": tasks_result.deleted_count,
+            "deleted_announcements_count": announcements_result.deleted_count
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @project_bp.route('/add-user/<project_id>', methods=['POST'])

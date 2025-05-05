@@ -356,3 +356,112 @@
     padding: 20px;
   }
 }
+
+/* Add these styles to your existing ManagementBoard.css file */
+
+/* Project card footer */
+.project-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+/* Delete button styling */
+.delete-project-btn {
+  background: transparent;
+  border: none;
+  color: #a0aec0;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-project-btn:hover {
+  background-color: #fee2e2;
+  color: #e53e3e;
+}
+
+.delete-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Delete modal styling */
+.delete-modal {
+  max-width: 450px;
+  text-align: center;
+}
+
+.delete-warning-icon {
+  font-size: 3rem;
+  margin: 10px 0;
+  color: #f59e0b;
+}
+
+.delete-warning-text {
+  color: #4b5563;
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.delete-warning-text strong {
+  color: #2d3748;
+}
+
+.delete-warning-subtext {
+  color: #7f8ea3;
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+}
+
+.delete-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.cancel-delete-btn {
+  background-color: #e5e7eb;
+  color: #4b5563;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-delete-btn:hover {
+  background-color: #d1d5db;
+}
+
+.confirm-delete-btn {
+  background-color: #ef4444;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.confirm-delete-btn:hover {
+  background-color: #dc2626;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+.confirm-delete-btn:active {
+  transform: translateY(1px);
+}

@@ -507,3 +507,98 @@ select {
 .comment-item:hover .delete-icon-btn {
   opacity: 1;
 }
+
+/* Members Modal specific */
+.members-modal {
+  max-width: 600px;
+}
+
+.members-list {
+  margin-top: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.member-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: background-color 0.2s;
+}
+
+.member-item:hover {
+  background-color: #f8fafc;
+}
+
+.member-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.member-username-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.member-username {
+  font-weight: bold;
+  font-size: 16px;
+  color: #2d3748;
+}
+
+.owner-badge {
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 2px 6px;
+  background-color: rgba(0, 255, 255, 0.1);
+}
+
+.member-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.remove-member-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.remove-member-btn:hover {
+  background-color: #d32f2f;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.remove-member-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.remove-member-btn:disabled {
+  background-color: #ffcdd2;
+  color: #b71c1c;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.no-members {
+  text-align: center;
+  padding: 20px;
+  color: #718096;
+  font-style: italic;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #e2e8f0;
+}
