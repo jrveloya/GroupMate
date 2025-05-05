@@ -1,18 +1,18 @@
 version: 1
-frontend:
-    phases:
-    preBuild:
-      commands:
-        - 'cd frontend'
-        - 'npm install'
-        - 'echo "Pre-build complete"'
-      build:
+applications:
+  - appRoot: frontend
+    frontend:
+      phases:
+        preBuild:
           commands:
-              - 'npm run build'
-              - 'ls -R frontend'
-    artifacts:
-        baseDirectory: ./frontend/build
+            - npm install  
+        build:
+          commands:
+            - npm run build  
+      artifacts:
+        baseDirectory: build  
         files:
-            - '**/*'
-    cache:
-        paths: []
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
