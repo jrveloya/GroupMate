@@ -47,12 +47,15 @@ const CompletedProjects = () => {
 
       const data = await response.json();
 
-      setCompletedProjects(data);
+      // Always ensure we set an array
+      setCompletedProjects(Array.isArray(data) ? data : []);
       setLoading(false);
     } catch (err) {
       console.error("Error fetching completed projects:", err);
       setError(err.message);
       setLoading(false);
+      // In case of error, ensure completedProjects is an array
+      setCompletedProjects([]);
     }
   };
 
@@ -63,6 +66,9 @@ const CompletedProjects = () => {
   // Get current projects based on pagination
   const indexOfLastProject = currentPage * projectsPerPage;
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+  console.log(completedProjects);
+
+  // This is now safe because completedProjects is always initialized as an array
   const currentProjects = completedProjects.slice(
     indexOfFirstProject,
     indexOfLastProject
