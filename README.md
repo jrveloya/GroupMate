@@ -10,6 +10,7 @@ Install mongoDB
 
 To run backend
 
+- open a separate terminal
 - pip install -r requirements.txt
 - python run.py
 
