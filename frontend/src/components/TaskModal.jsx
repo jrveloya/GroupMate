@@ -1,10 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import "./TaskModal.css";
 
-const TaskModal = ({ task, onClose, onComplete, onComment }) => {
+const TaskModal = ({
+  task,
+  onClose,
+  onComplete,
+  onComment,
+  onDeleteComment,
+}) => {
   const [comment, setComment] = useState("");
   const [colorMap, setColorMap] = useState({});
+  const [currentUserId, setCurrentUserId] = useState(null);
+
+  // Get the current user's ID when the component mounts
+  useEffect(() => {
+    const userId = Cookies.get("user_id");
+    if (userId) {
+      setCurrentUserId(userId);
+    }
+  }, []);
+
+  // Helper function to check if the current user can delete a comment
+  const canDeleteComment = (comment) => {
+    // If no current user ID is available, don't allow deletion
+    if (!currentUserId) return false;
+
+    // Check if the user is the comment owner
+    return currentUserId === comment.user_id;
+  };
 
   // Helper function to generate a color from a name using a simple formula
   const getColorForCommenter = (name) => {
@@ -85,18 +109,40 @@ const TaskModal = ({ task, onClose, onComplete, onComment }) => {
     }
   };
 
+  const handleDeleteComment = (commentId) => {
+    if (window.confirm("Are you sure you want to delete this comment?")) {
+      onDeleteComment(commentId);
+    }
+  };
+
+  // Function to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <button className="close-btn" onClick={onClose}>
-          X
+        <button className="close-btn" onClick={onClose} aria-label="Close">
+          ×
         </button>
+
         <h3>{task.title}</h3>
         <p>{task.description}</p>
 
+        <span className="project-name">
+          <i className="project-icon">📁</i> {task.project.name}
+        </span>
+
         <div className="actions">
           <button className="complete-btn" onClick={() => onComplete(task.id)}>
-            Mark as Completed
+            <i className="complete-icon">✓</i> Mark as Completed
           </button>
         </div>
 
@@ -109,6 +155,8 @@ const TaskModal = ({ task, onClose, onComplete, onComment }) => {
                   const commenterColor = getColorForCommenter(
                     comment.commenterName
                   );
+                  const isOwner = canDeleteComment(comment);
+
                   return (
                     <li
                       key={index}
@@ -117,17 +165,34 @@ const TaskModal = ({ task, onClose, onComplete, onComment }) => {
                         borderLeftColor: commenterColor,
                       }}
                     >
-                      <strong style={{ color: commenterColor }}>
-                        {comment.commenterName}:
-                      </strong>{" "}
-                      {comment.text}
+                      <div className="comment-content">
+                        <div className="comment-text">
+                          <strong style={{ color: commenterColor }}>
+                            {comment.commenterName}:
+                          </strong>{" "}
+                          {comment.text}
+                        </div>
+
+                        {/* Simple delete icon button, visible only if the user is the comment owner */}
+                        {isOwner && (
+                          <button
+                            className="delete-icon-btn"
+                            onClick={() => handleDeleteComment(comment.id)}
+                            aria-label="Delete comment"
+                          >
+                            🗑️
+                          </button>
+                        )}
+                      </div>
                     </li>
                   );
                 })}
               </ul>
             </div>
           ) : (
-            <p>No comments yet.</p>
+            <p className="no-comments">
+              No comments yet. Be the first to add one!
+            </p>
           )}
 
           <div className="comment-inputs">
@@ -135,8 +200,11 @@ const TaskModal = ({ task, onClose, onComplete, onComment }) => {
               placeholder="Leave a comment..."
               value={comment}
               onChange={handleCommentChange}
+              aria-label="Comment text"
             />
-            <button onClick={handleCommentSubmit}>Submit Comment</button>
+            <button onClick={handleCommentSubmit}>
+              <i className="submit-icon">💬</i> Submit Comment
+            </button>
           </div>
         </div>
       </div>

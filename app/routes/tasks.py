@@ -57,6 +57,7 @@ def update_task_route(task_id):
         "title" : data.get('title'),
         "description" : data.get('description'),
         "status" : data.get('status'),
+        "assigned_to": data.get('assigned_to_id'),
         "updated_at" : datetime.now(timezone.utc)
     }
     updates = {k : v for k,v in updates.items() if v is not None}
@@ -82,6 +83,7 @@ def get_all_active_tasks_by_user_route():
     tasks = get_all_active_tasks_by_user(user_id)
     #Add the project name to the response
     for task in tasks:
+        print(task["_id"])
         task['project'] = get_project(str(task['project_id']))['name']
     return jsonify(tasks), 200
 

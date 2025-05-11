@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router"; // Added useLocation
-import { FiSettings, FiLogOut } from "react-icons/fi"; // Added FiLogOut icon
+import { Link, useNavigate, useLocation } from "react-router";
+// Added useLocation
+import { FiSettings, FiLogOut } from "react-icons/fi";
+// Added FiLogOut icon
 import Cookies from "js-cookie";
 import "./Navbar.css";
 
@@ -58,14 +60,24 @@ const Navbar = () => {
           </Link>
         </li>
         {isManager && (
-          <li>
-            <Link
-              to="/management-board"
-              className={isActive("/management-board") ? "active" : ""}
-            >
-              Management Board
-            </Link>
-          </li>
+          <>
+            <li>
+              <Link
+                to="/management-board"
+                className={isActive("/management-board") ? "active" : ""}
+              >
+                Management Board
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/completed-projects"
+                className={isActive("/completed-projects") ? "active" : ""}
+              >
+                Completed Projects
+              </Link>
+            </li>
+          </>
         )}
       </ul>
       <div className="nav-actions">

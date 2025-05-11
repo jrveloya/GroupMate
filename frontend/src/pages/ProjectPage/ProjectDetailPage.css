@@ -5,18 +5,66 @@
 }
 
 .project-header {
-  text-align: center;
   margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.project-header h1 {
-  font-size: 2.5rem;
+.project-header h2 {
+  color: #2d3748;
+  font-size: 2.2rem;
+  margin-bottom: 0;
+  font-weight: 700;
+  text-align: left;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+/* Underline for visibility */
+.project-header h2::after {
+  content: "";
+  position: absolute;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(to right, #6366f1, #4c51bf);
+  bottom: 0;
+  left: 0;
+  border-radius: 3px;
+}
+
+.project-header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.complete-project-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
   font-weight: bold;
+  transition: background-color 0.3s;
 }
 
-.project-header p {
-  font-size: 1.2rem;
-  color: #666;
+.complete-project-btn:hover {
+  background-color: #45a049;
+}
+
+.complete-project-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.project-completed-badge {
+  background-color: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: bold;
 }
 
 .project-content {
@@ -37,6 +85,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  margin-top: 0;
 }
 
 .new-task-btn,
@@ -67,17 +116,41 @@
   background: #fff;
   padding: 15px;
   margin-bottom: 10px;
+  margin-top: 10px;
   border-radius: 8px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+/* Adding the same highlighting and cursor for both cards */
+.task-card.clickable,
+.announcement-card.clickable {
+  cursor: pointer;
+}
+
+.task-card.clickable:hover,
+.announcement-card.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+  background-color: #f8f9ff;
 }
 
 .task-card h4,
-.announcement-card p {
-  margin: 0;
+.announcement-card h4 {
+  margin: 0 0 10px 0;
+  color: #4a5568;
 }
 
-.task-card p {
+.task-card p,
+.announcement-card p {
   color: #666;
+  margin: 0 0 8px 0;
+}
+
+.announcement-meta {
+  font-size: 12px;
+  color: #888;
+  margin-top: 8px;
 }
 
 .projects .new-task-btn,
@@ -93,15 +166,13 @@
   padding: 10px;
   box-sizing: border-box;
 }
+
 .announcement-description {
   margin-top: 20px;
 }
+
 .task-form {
   padding: 10px;
-}
-
-.modal-content button {
-  margin-top: 50px;
 }
 
 /* View Members Button */
@@ -113,7 +184,6 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  margin: 10px 0;
 }
 
 .view-members-btn:hover {
@@ -170,7 +240,7 @@
   padding-bottom: 10px;
 }
 
-/* Add to your ProjectDetailPage.css */
+/* Announcement form styling */
 .announcement-form input[type="text"] {
   width: 100%;
   padding: 8px 12px;
@@ -178,4 +248,55 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
+}
+
+/* Loading and error messages */
+.loading-message,
+.error-message,
+.no-project-message,
+.no-items-message {
+  padding: 20px;
+  color: #666;
+}
+
+.error-container {
+  text-align: center;
+  padding: 30px;
+}
+
+.back-button {
+  background-color: #6366f1;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.back-button:hover {
+  background-color: #4f46e5;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .project-content {
+    flex-direction: column;
+  }
+
+  .projects {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .project-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .project-header-buttons {
+    margin-top: 15px;
+    width: 100%;
+    justify-content: flex-start;
+  }
 }

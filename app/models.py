@@ -114,37 +114,6 @@ def get_projects_by_manager_id(manager_id):
     }))
     return projects
 
-"""
-Adds a user to a project
-This only to be used by managers role users.
-@param
-    username : name of the user to add
-    project_id : ID of the manager user that created the project 
-"""
-def add_user_to_project(username, project_id):
-    db = get_db()
-    user_id = get_user_by_username(username)['_id']
-  
-    if isinstance(project_id, str):
-            project_id = ObjectId(project_id)
-    if isinstance(user_id, str):
-        user_id = ObjectId(user_id)
-
-    project = db.projects.find_one({"_id": project_id})
-    if not project:
-        return False, "Project not found"
-    
-    if user_id in project.get('member_ids', []):
-        return False, "User is already a member"
-
-
-    result = db.projects.update_one(
-        {"_id": project_id},
-        {
-            "$addToSet": {"member_ids": user_id},  
-            "$set": {"updated_at": datetime.now(timezone.utc)}
-        }
-    )
 
 # ---------- TASK CRUD METHODS ----------
 
@@ -257,10 +226,11 @@ def get_task_list_through_asignee_id(asignee_id):
 
 # ----------COMMENT ----------
 
-def create_task_comment(content, user_id, task_id, username):
+def create_task_comment(content, user_id, task_id, username, comment_id):
     db = get_db()
     task_comment = {
         "user_id" : ObjectId(user_id),
+        "_id" : ObjectId(comment_id),
         "username" : username,
         "content" : content,
         "task_id" : ObjectId(task_id),
@@ -300,3 +270,13 @@ def create_announcement(project_id, user_id, title, content):
     }
     result = db.announcements.insert_one(announcement)
     return str(result.inserted_id)
+
+"""
+This updates a task based on the updates received
+@param
+    task_id : the unique ID for the task
+    updates : a dictionary of updates correlating to the schema definition of a task
+"""
+def update_announcement(announcment_id, updates):
+    db = get_db()
+    return db.announcements.update_one({"_id" : ObjectId(announcment_id)}, {"$set" : updates})
