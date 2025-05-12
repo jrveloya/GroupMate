@@ -61,7 +61,6 @@ npm start
 - ECR used for container image storage.
 - Load Balancer routes traffic to ECS tasks.
 - MongoDB hosted via EC2 or Atlas (optional).
-
 ## Future Improvements
 
 - Role-based dashboard UI

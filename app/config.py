@@ -11,7 +11,7 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key")
 
     # MongoDB URI (can use MongoDB Atlas or localhost)
-    MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/projectsync")
+    MONGO_URI = os.getenv("MONGO_URI", "mongodb://172.31.12.142:27017/projectsync")
 
     # JWT settings
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "another-super-secret")
