@@ -14,12 +14,15 @@ const CompletedTasks = () => {
       const token = localStorage.getItem("access_token");
 
       // Updated URL to match the backend endpoint
-      const response = await fetch("http://127.0.0.1:5050/tasks/me/completed", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/me/completed",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch tasks");

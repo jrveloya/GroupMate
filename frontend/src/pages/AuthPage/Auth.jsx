@@ -48,13 +48,16 @@ const Auth = () => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5050/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      const response = await fetch(
+        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -92,17 +95,20 @@ const Auth = () => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5050/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-          role: isManager ? "manager" : "user",
-        }),
-      });
+      const response = await fetch(
+        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/auth/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            password,
+            role: isManager ? "manager" : "user",
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();

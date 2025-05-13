@@ -116,7 +116,7 @@ const ManagementBoard = () => {
 
       try {
         const response = await fetch(
-          `http://127.0.0.1:5050/project/manager/${managerId}`,
+          `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/manager/${managerId}`,
           {
             method: "GET",
             headers: {
@@ -173,19 +173,22 @@ const ManagementBoard = () => {
         status: "active", // Ensure new projects are active
       });
 
-      const response = await fetch("http://127.0.0.1:5050/project/", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: newProject.name,
-          description: newProject.description || "",
-          manager_id: managerId,
-          status: "active", // Add status field to API request
-        }),
-      });
+      const response = await fetch(
+        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: newProject.name,
+            description: newProject.description || "",
+            manager_id: managerId,
+            status: "active", // Add status field to API request
+          }),
+        }
+      );
 
       console.log("Response status:", response.status);
 
@@ -238,7 +241,7 @@ const ManagementBoard = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://127.0.0.1:5050/project/${projectToDelete._id}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/${projectToDelete._id}`,
         {
           method: "DELETE",
           headers: {

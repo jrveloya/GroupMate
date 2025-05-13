@@ -158,7 +158,7 @@ const TaskViewEditModal = ({
 
         // Get the username from current user data
         const userResponse = await fetch(
-          `http://127.0.0.1:5050/users/${userId}`,
+          `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/${userId}`,
           {
             method: "GET",
             headers: {
@@ -175,17 +175,20 @@ const TaskViewEditModal = ({
         const commenterName = userData.username || "Anonymous";
 
         // Submit comment to the server - matching the Taskboard implementation
-        const response = await fetch("http://127.0.0.1:5050/comments/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            task_id: task._id,
-            content: comment,
-          }),
-        });
+        const response = await fetch(
+          "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              task_id: task._id,
+              content: comment,
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to post comment");
@@ -233,7 +236,7 @@ const TaskViewEditModal = ({
 
         // Match the endpoint from Taskboard implementation
         const response = await fetch(
-          `http://127.0.0.1:5050/comments/${commentId}`,
+          `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/${commentId}`,
           {
             method: "DELETE",
             headers: {

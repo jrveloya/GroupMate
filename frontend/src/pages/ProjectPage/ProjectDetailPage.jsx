@@ -52,7 +52,7 @@ const ProjectDetailPage = () => {
 
       // Fetch project data
       const projectResponse = await fetch(
-        `http://127.0.0.1:5050/project/${projectId}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/${projectId}`,
         {
           method: "GET",
           headers: {
@@ -74,7 +74,7 @@ const ProjectDetailPage = () => {
 
       // Fetch tasks
       const tasksResponse = await fetch(
-        `http://127.0.0.1:5050/tasks/project/${projectId}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/project/${projectId}`,
         {
           method: "GET",
           headers: {
@@ -118,7 +118,7 @@ const ProjectDetailPage = () => {
 
       // Fetch announcements
       const announcementsResponse = await fetch(
-        `http://127.0.0.1:5050/announcement/project/${projectId}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/project/${projectId}`,
         {
           method: "GET",
           headers: {
@@ -166,7 +166,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const tasksResponse = await fetch(
-        `http://127.0.0.1:5050/tasks/project/${projectId}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/project/${projectId}`,
         {
           method: "GET",
           headers: {
@@ -215,19 +215,22 @@ const ProjectDetailPage = () => {
     try {
       const token = localStorage.getItem("access_token");
 
-      const response = await fetch(`http://127.0.0.1:5050/tasks/`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: newTask.title,
-          description: newTask.description,
-          project_id: project._id,
-          assigned_to_id: newTask.assigned_to,
-        }),
-      });
+      const response = await fetch(
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: newTask.title,
+            description: newTask.description,
+            project_id: project._id,
+            assigned_to_id: newTask.assigned_to,
+          }),
+        }
+      );
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -276,7 +279,7 @@ const ProjectDetailPage = () => {
 
       // This is a regular task update, not just comments
       const response = await fetch(
-        `http://127.0.0.1:5050/tasks/${updatedTask._id}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/${updatedTask._id}`,
         {
           method: "PUT",
           headers: {
@@ -326,17 +329,20 @@ const ProjectDetailPage = () => {
 
       const token = localStorage.getItem("access_token");
 
-      const response = await fetch("http://127.0.0.1:5050/comments/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          task_id: taskId,
-          content: commentText,
-        }),
-      });
+      const response = await fetch(
+        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            task_id: taskId,
+            content: commentText,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to post comment");
@@ -392,7 +398,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://127.0.0.1:5050/comments/${commentId}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/${commentId}`,
         {
           method: "DELETE",
           headers: {
@@ -443,18 +449,21 @@ const ProjectDetailPage = () => {
     try {
       const token = localStorage.getItem("access_token");
 
-      const response = await fetch(`http://127.0.0.1:5050/announcement/`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          project_id: project._id,
-          title: newAnnouncement.title,
-          content: newAnnouncement.content,
-        }),
-      });
+      const response = await fetch(
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            project_id: project._id,
+            title: newAnnouncement.title,
+            content: newAnnouncement.content,
+          }),
+        }
+      );
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -482,7 +491,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://127.0.0.1:5050/announcement/${updatedAnnouncement._id}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/${updatedAnnouncement._id}`,
         {
           method: "PUT",
           headers: {
@@ -521,7 +530,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const announcementsResponse = await fetch(
-        `http://127.0.0.1:5050/announcement/project/${projectId}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/project/${projectId}`,
         {
           method: "GET",
           headers: {
@@ -545,7 +554,7 @@ const ProjectDetailPage = () => {
     const token = localStorage.getItem("access_token");
 
     const response = await fetch(
-      `http://127.0.0.1:5050/project/add-user/${projectId}`,
+      `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/add-user/${projectId}`,
       {
         method: "POST",
         headers: {
@@ -604,13 +613,16 @@ const ProjectDetailPage = () => {
     try {
       const token = localStorage.getItem("access_token");
 
-      const response = await fetch(`http://127.0.0.1:5050/tasks/${taskId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/${taskId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -639,7 +651,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://127.0.0.1:5050/project/user/${projectId}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/user/${projectId}`,
         {
           method: "DELETE",
           headers: {
@@ -681,7 +693,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://127.0.0.1:5050/announcement/${announcementId}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/${announcementId}`,
         {
           method: "DELETE",
           headers: {
@@ -723,7 +735,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://127.0.0.1:5050/project/complete/${projectId}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/complete/${projectId}`,
         {
           method: "PUT",
           headers: {

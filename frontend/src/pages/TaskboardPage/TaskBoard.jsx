@@ -18,12 +18,15 @@ const Taskboard = () => {
       console.log(token);
 
       // Updated URL to match the backend endpoint
-      const response = await fetch("http://127.0.0.1:5050/tasks/me", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
-        },
-      });
+      const response = await fetch(
+        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/me",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch tasks");
@@ -74,7 +77,7 @@ const Taskboard = () => {
 
       // Make a POST request to complete the task
       const response = await fetch(
-        `http://127.0.0.1:5050/tasks/${taskId}/complete`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/${taskId}/complete`,
         {
           method: "POST",
           headers: {
@@ -117,17 +120,20 @@ const Taskboard = () => {
         return;
       }
 
-      const response = await fetch("http://127.0.0.1:5050/comments/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-        body: JSON.stringify({
-          task_id: selectedTask.id,
-          content: newComment,
-        }),
-      });
+      const response = await fetch(
+        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+          body: JSON.stringify({
+            task_id: selectedTask.id,
+            content: newComment,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to post comment");
@@ -176,7 +182,7 @@ const Taskboard = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://127.0.0.1:5050/comments/${commentId}`,
+        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/${commentId}`,
         {
           method: "DELETE",
           headers: {

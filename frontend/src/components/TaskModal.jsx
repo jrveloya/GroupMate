@@ -75,12 +75,15 @@ const TaskModal = ({
         // Get the token from localStorage
         const token = localStorage.getItem("access_token");
 
-        fetch(`http://127.0.0.1:5050/users/${userId}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        fetch(
+          `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
           .then((response) => {
             if (!response.ok) {
               throw new Error("Failed to fetch user data");

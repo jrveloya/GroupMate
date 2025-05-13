@@ -30,7 +30,7 @@ const Dashboard = () => {
 
         // Fetch user data using the provided endpoint
         const userResponse = await fetch(
-          `http://127.0.0.1:5050/users/${userId}`,
+          `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/${userId}`,
           {
             method: "GET",
             headers: {
@@ -65,7 +65,7 @@ const Dashboard = () => {
         }
 
         const response = await fetch(
-          "http://127.0.0.1:5050/announcement/user",
+          "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/user",
           {
             method: "GET",
             headers: {
@@ -101,13 +101,16 @@ const Dashboard = () => {
           throw new Error("Please log in to view tasks");
         }
 
-        const response = await fetch("http://127.0.0.1:5050/tasks/me", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/me",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
           if (response.status === 401) {

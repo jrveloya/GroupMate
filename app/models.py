@@ -5,7 +5,7 @@ from flask import current_app
 import uuid
 
 def get_db():
-    client = MongoClient('mongodb://localhost:27017/')
+    client = MongoClient('mongodb://172.31.12.142:27017/projectsync')
     return client['groupmate']
 
 # helper function to converd ObjectId to str ( in order to return as JSON)
