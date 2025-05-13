@@ -116,7 +116,7 @@ const ManagementBoard = () => {
 
       try {
         const response = await fetch(
-          `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/manager/${managerId}`,
+          `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/manager/${managerId}`,
           {
             method: "GET",
             headers: {
@@ -174,7 +174,7 @@ const ManagementBoard = () => {
       });
 
       const response = await fetch(
-        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/",
+        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/",
         {
           method: "POST",
           headers: {
@@ -241,7 +241,7 @@ const ManagementBoard = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/${projectToDelete._id}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/${projectToDelete._id}`,
         {
           method: "DELETE",
           headers: {

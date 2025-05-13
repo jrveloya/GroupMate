@@ -15,7 +15,7 @@ const CompletedTasks = () => {
 
       // Updated URL to match the backend endpoint
       const response = await fetch(
-        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/me/completed",
+        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/me/completed",
         {
           method: "GET",
           headers: {

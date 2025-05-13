@@ -52,7 +52,7 @@ const ProjectDetailPage = () => {
 
       // Fetch project data
       const projectResponse = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/${projectId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/${projectId}`,
         {
           method: "GET",
           headers: {
@@ -74,7 +74,7 @@ const ProjectDetailPage = () => {
 
       // Fetch tasks
       const tasksResponse = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/project/${projectId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/project/${projectId}`,
         {
           method: "GET",
           headers: {
@@ -118,7 +118,7 @@ const ProjectDetailPage = () => {
 
       // Fetch announcements
       const announcementsResponse = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/project/${projectId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/project/${projectId}`,
         {
           method: "GET",
           headers: {
@@ -166,7 +166,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const tasksResponse = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/project/${projectId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/project/${projectId}`,
         {
           method: "GET",
           headers: {
@@ -216,7 +216,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/`,
         {
           method: "POST",
           headers: {
@@ -279,7 +279,7 @@ const ProjectDetailPage = () => {
 
       // This is a regular task update, not just comments
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/${updatedTask._id}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/${updatedTask._id}`,
         {
           method: "PUT",
           headers: {
@@ -330,7 +330,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/",
+        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/",
         {
           method: "POST",
           headers: {
@@ -398,7 +398,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/${commentId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/${commentId}`,
         {
           method: "DELETE",
           headers: {
@@ -450,7 +450,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/`,
         {
           method: "POST",
           headers: {
@@ -491,7 +491,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/${updatedAnnouncement._id}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/${updatedAnnouncement._id}`,
         {
           method: "PUT",
           headers: {
@@ -530,7 +530,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const announcementsResponse = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/project/${projectId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/project/${projectId}`,
         {
           method: "GET",
           headers: {
@@ -554,7 +554,7 @@ const ProjectDetailPage = () => {
     const token = localStorage.getItem("access_token");
 
     const response = await fetch(
-      `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/add-user/${projectId}`,
+      `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/add-user/${projectId}`,
       {
         method: "POST",
         headers: {
@@ -614,7 +614,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/${taskId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/${taskId}`,
         {
           method: "DELETE",
           headers: {
@@ -651,7 +651,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/user/${projectId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/user/${projectId}`,
         {
           method: "DELETE",
           headers: {
@@ -693,7 +693,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/${announcementId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/${announcementId}`,
         {
           method: "DELETE",
           headers: {
@@ -735,7 +735,7 @@ const ProjectDetailPage = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/complete/${projectId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/complete/${projectId}`,
         {
           method: "PUT",
           headers: {

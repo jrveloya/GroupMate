@@ -76,7 +76,7 @@ const TaskModal = ({
         const token = localStorage.getItem("access_token");
 
         fetch(
-          `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/${userId}`,
+          `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/${userId}`,
           {
             method: "GET",
             headers: {

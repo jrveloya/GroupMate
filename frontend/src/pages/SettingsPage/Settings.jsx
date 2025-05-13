@@ -24,7 +24,7 @@ const Settings = () => {
 
     try {
       const res = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/${userId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -79,7 +79,7 @@ const Settings = () => {
 
     try {
       const res = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/`,
         {
           method: "PUT",
           headers: {

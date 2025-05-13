@@ -19,7 +19,7 @@ const Taskboard = () => {
 
       // Updated URL to match the backend endpoint
       const response = await fetch(
-        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/me",
+        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/me",
         {
           method: "GET",
           headers: {
@@ -77,7 +77,7 @@ const Taskboard = () => {
 
       // Make a POST request to complete the task
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/${taskId}/complete`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/${taskId}/complete`,
         {
           method: "POST",
           headers: {
@@ -121,7 +121,7 @@ const Taskboard = () => {
       }
 
       const response = await fetch(
-        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/",
+        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/",
         {
           method: "POST",
           headers: {
@@ -182,7 +182,7 @@ const Taskboard = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/${commentId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/${commentId}`,
         {
           method: "DELETE",
           headers: {

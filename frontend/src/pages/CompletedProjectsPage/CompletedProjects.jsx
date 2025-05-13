@@ -23,7 +23,7 @@ const CompletedProjects = () => {
 
       // Call the endpoint to get completed projects
       const response = await fetch(
-        `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/completed/manager/${managerId}`,
+        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/completed/manager/${managerId}`,
         {
           method: "GET",
           headers: {

@@ -49,7 +49,7 @@ const Auth = () => {
 
     try {
       const response = await fetch(
-        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/auth/login",
+        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/auth/login",
         {
           method: "POST",
           headers: {
@@ -96,7 +96,7 @@ const Auth = () => {
 
     try {
       const response = await fetch(
-        "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/auth/signup",
+        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/auth/signup",
         {
           method: "POST",
           headers: {

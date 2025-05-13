@@ -158,7 +158,7 @@ const TaskViewEditModal = ({
 
         // Get the username from current user data
         const userResponse = await fetch(
-          `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/${userId}`,
+          `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/${userId}`,
           {
             method: "GET",
             headers: {
@@ -176,7 +176,7 @@ const TaskViewEditModal = ({
 
         // Submit comment to the server - matching the Taskboard implementation
         const response = await fetch(
-          "http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/",
+          "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/",
           {
             method: "POST",
             headers: {
@@ -236,7 +236,7 @@ const TaskViewEditModal = ({
 
         // Match the endpoint from Taskboard implementation
         const response = await fetch(
-          `http://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/${commentId}`,
+          `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/${commentId}`,
           {
             method: "DELETE",
             headers: {
