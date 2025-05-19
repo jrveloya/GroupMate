@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import "./CompletedProjects.css";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const CompletedProjects = () => {
   const [completedProjects, setCompletedProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +25,7 @@ const CompletedProjects = () => {
 
       // Call the endpoint to get completed projects
       const response = await fetch(
-        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/completed/manager/${managerId}`,
+        `${API_URL}/project/completed/manager/${managerId}`,
         {
           method: "GET",
           headers: {

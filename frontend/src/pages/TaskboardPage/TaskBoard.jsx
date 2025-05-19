@@ -3,6 +3,8 @@ import TaskModal from "../../components/TaskModal";
 import Cookies from "js-cookie";
 import "./Taskboard.css";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const Taskboard = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +21,7 @@ const Taskboard = () => {
 
       // Updated URL to match the backend endpoint
       const response = await fetch(
-        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/me",
+        "${API_URL}/tasks/me",
         {
           method: "GET",
           headers: {
@@ -77,7 +79,7 @@ const Taskboard = () => {
 
       // Make a POST request to complete the task
       const response = await fetch(
-        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/${taskId}/complete`,
+        `${API_URL}/tasks/${taskId}/complete`,
         {
           method: "POST",
           headers: {
@@ -121,7 +123,7 @@ const Taskboard = () => {
       }
 
       const response = await fetch(
-        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/",
+        "${API_URL}/comments/",
         {
           method: "POST",
           headers: {
@@ -182,7 +184,7 @@ const Taskboard = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/comments/${commentId}`,
+        `${API_URL}/comments/${commentId}`,
         {
           method: "DELETE",
           headers: {

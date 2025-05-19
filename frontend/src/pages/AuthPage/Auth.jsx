@@ -3,6 +3,8 @@ import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
 import "./Auth.css";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const Auth = () => {
   const [activeTab, setActiveTab] = useState("login");
 
@@ -49,7 +51,7 @@ const Auth = () => {
 
     try {
       const response = await fetch(
-        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/auth/login",
+        `${API_URL}/auth/login`,
         {
           method: "POST",
           headers: {
@@ -96,7 +98,7 @@ const Auth = () => {
 
     try {
       const response = await fetch(
-        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/auth/signup",
+        `${API_URL}/auth/signup`,
         {
           method: "POST",
           headers: {

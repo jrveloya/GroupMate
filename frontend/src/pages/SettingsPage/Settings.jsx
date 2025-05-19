@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import "./Settings.css";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const Settings = () => {
   const [user, setUser] = useState({ username: "" });
   const [formValues, setFormValues] = useState({ username: "" });
@@ -24,7 +26,7 @@ const Settings = () => {
 
     try {
       const res = await fetch(
-        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/${userId}`,
+        `${API_URL}/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -79,7 +81,7 @@ const Settings = () => {
 
     try {
       const res = await fetch(
-        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/`,
+        `${API_URL}/users/`,
         {
           method: "PUT",
           headers: {

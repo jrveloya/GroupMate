@@ -3,6 +3,8 @@ import { Link } from "react-router";
 import Cookies from "js-cookie";
 import "./ManagementBoard.css";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 // Modal component for adding new projects
 const AddProjectModal = ({ isOpen, onClose, onAddProject }) => {
   const [projectName, setProjectName] = useState("");
@@ -116,7 +118,7 @@ const ManagementBoard = () => {
 
       try {
         const response = await fetch(
-          `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/manager/${managerId}`,
+          `${API_URL}/project/manager/${managerId}`,
           {
             method: "GET",
             headers: {
@@ -174,7 +176,7 @@ const ManagementBoard = () => {
       });
 
       const response = await fetch(
-        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/",
+        `${API_URL}/project/`,
         {
           method: "POST",
           headers: {
@@ -241,7 +243,7 @@ const ManagementBoard = () => {
       const token = localStorage.getItem("access_token");
 
       const response = await fetch(
-        `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/project/${projectToDelete._id}`,
+        `${API_URL}/project/${projectToDelete._id}`,
         {
           method: "DELETE",
           headers: {

@@ -3,6 +3,8 @@ import { Link } from "react-router";
 import Cookies from "js-cookie";
 import "./Dashboard.css";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const Dashboard = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +32,7 @@ const Dashboard = () => {
 
         // Fetch user data using the provided endpoint
         const userResponse = await fetch(
-          `https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/users/${userId}`,
+          `${API_URL}/users/${userId}`,
           {
             method: "GET",
             headers: {
@@ -65,7 +67,7 @@ const Dashboard = () => {
         }
 
         const response = await fetch(
-          "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/announcement/user",
+          `${API_URL}/announcement/user`,
           {
             method: "GET",
             headers: {
@@ -102,7 +104,7 @@ const Dashboard = () => {
         }
 
         const response = await fetch(
-          "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/me",
+          `${API_URL}/tasks/me`,
           {
             method: "GET",
             headers: {

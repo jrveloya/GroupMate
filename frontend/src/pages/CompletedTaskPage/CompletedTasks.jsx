@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./CompletedTasks.css";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const CompletedTasks = () => {
   const [completedTasks, setCompletedTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +17,7 @@ const CompletedTasks = () => {
 
       // Updated URL to match the backend endpoint
       const response = await fetch(
-        "https://groupmate-alb-1871461292.us-west-1.elb.amazonaws.com:5050/tasks/me/completed",
+        `${API_URL}/tasks/me/completed`,
         {
           method: "GET",
           headers: {
