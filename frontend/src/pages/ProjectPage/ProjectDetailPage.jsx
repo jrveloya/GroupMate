@@ -3,14 +3,14 @@ import { useParams, useNavigate } from "react-router";
 import "./ProjectDetailPage.css";
 import Cookies from "js-cookie";
 
-const API_URL = process.env.REACT_APP_API_URL;
-
 // Import Modal Components from the same folder
 import AddTaskModal from "../../components/AddTaskModal";
 import AddAnnouncementModal from "../../components/AddAnnouncementModal";
 import MembersModal from "../../components/MembersModal";
 import TaskViewEditModal from "../../components/TaskViewEditModal";
 import AnnouncementViewEditModal from "../../components/AnnouncementViewEditModal";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 // Project Detail Page Component
 const ProjectDetailPage = () => {
