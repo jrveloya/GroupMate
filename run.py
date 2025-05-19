@@ -1,8 +1,10 @@
 import os
 from app import create_app
 from app import config
+from flask_cors import CORS
 
 app = create_app()
+CORS(app, origins=["https://www.groupmateproject.com"])
 
 @app.route('/health', methods=['GET'])
 def health_check():
