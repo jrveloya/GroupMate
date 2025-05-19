@@ -4,7 +4,7 @@ from app import config
 from flask_cors import CORS
 
 app = create_app()
-CORS(app, origins=["https://www.groupmateproject.com"])
+CORS(app, origins=["https://www.groupmateproject.com"], supports_credentials=True)
 
 @app.route('/health', methods=['GET'])
 def health_check():
